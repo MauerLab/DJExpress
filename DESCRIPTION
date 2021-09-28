@@ -1,16 +1,58 @@
 Package: DJExpress
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Package: DJExpress
+Type: Package
+Title: An integrated application for differential splicing analysis and visualization
+Version: 0.1.0
+Author: Lina Gallego-Paez
+Maintainer: Lina Gallego-Paez <linhiel@gmail.com>
+Description: R package for differential expression analysis of transcriptomic features and expression-trait associations.
+    DJExpress uses raw splice junction counts – derived from STAR aligner or other junction quantification algorithms – as input data to determine gene-level differential junction usage.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Imports: 
+    data.table,
+    dplyr,
+    magrittr,
+    dynamicTreeCut,
+    edgeR,
+    fastcluster,
+    GenomicRanges,
+    ggplot2,
+    ggrepel,
+    highcharter,
+    igraph,
+    IRanges,
+    limma,
+    readr,
+    stringr,
+    tibble,
+    tidyr,
+    WGCNA,
+    MatrixEQTL,
+    RColorBrewer,
+    methods
+Collate: 
+    'DJEanalize.R'
+    'DJEanlz.R'
+    'DJEannotate.R'
+    'zzz.R'
+    'globals.R'
+    'DJEimport.R'
+    'DJEplotSplice.R'
+    'DJEprepare.R'
+    'DJEspliceRadar.R'
+    'DJEvsTrait.R'
+    'JAn.R'
+    'JCNA1pass.R'
+    'JCNA2pass.R'
+    'JCNAModTrait.R'
+    'JCNAgenePrepare.R'
+    'JCNAprepare.R'
+    'dje.R'
+    'goodSamplesJunct.R'
+    'topDJE.R'
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
