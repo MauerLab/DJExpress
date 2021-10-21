@@ -26,8 +26,8 @@
 #' SF.exp <- readRDS(SF)
 #' Group1 <- colnames(DJEanlz$v.norm$E)[grep("SRR", colnames(DJEanlz$v.norm$E))]
 #' DT.out <- DJEvsTrait(analize.out = DJEanlz, Group1 = Group1,traitData = SF.exp,
-#' coeff = 0.2,select.junctions = c("chr3:39450216:39452246:1","chr3:39450216:39452244:1",
-#' "chr3:39448256:39449111:1","chr3:39448256:39449093:1"),
+#' coeff = 0.2,select.junctions = c("chr1:225688773:225695652:2",
+#' "chr1:225692756:225695652:2","chr1:225688773:225692692:2"),
 #' test.type = "Correlation", cor.method = "bicor")
 #' @importFrom grDevices dev.off recordPlot
 #' @importFrom WGCNA bicor

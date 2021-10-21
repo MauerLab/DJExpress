@@ -43,5 +43,5 @@ Plots relative log-fold changes by junctions for the specified gene and highligh
 }
 \examples{
 data(DJEanlz)
-iPlot.out <- DJEplotSplice(DJEanlz, geneID="RPSA")
+iPlot.out <- DJEplotSplice(DJEanlz, geneID="ENAH", logFC = 0.8, FDR = 0.05)
 }

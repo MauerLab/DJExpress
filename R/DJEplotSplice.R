@@ -14,7 +14,7 @@
 #' @return interactive highcharts plot showing relative logFC across junctions in target gene
 #' @examples
 #' data(DJEanlz)
-#' iPlot.out <- DJEplotSplice(DJEanlz, geneID="RPSA")
+#' iPlot.out <- DJEplotSplice(DJEanlz, geneID="ENAH", logFC = 0.8, FDR = 0.05)
 #' @import magrittr
 #' @importFrom grDevices dev.off recordPlot
 #' @importFrom graphics abline par text

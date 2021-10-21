@@ -10,7 +10,7 @@
 #' @examples
 #' DvT <- system.file("extdata", "DvT.rds", package = "DJExpress")
 #' DvT.out <- readRDS(DvT)
-#' Sr.out <- DJEspliceRadar(DvT.out, ordered.junction = "chr3:39450216:39452244:1")
+#' Sr.out <- DJEspliceRadar(DvT.out, ordered.junction = "chr1:225688773:225692692:2")
 #' @import magrittr
 #' @importFrom grDevices dev.off recordPlot
 #' @importFrom graphics abline par text
