@@ -168,7 +168,8 @@ JCNAprepare <-
             TSamp.den = TSamp.den,
             datExpr = datExpr,
             datTraits = traitData,
-            NetTop = NetTop
+            NetTop = NetTop,
+            sft =sft
           )
         )
       } else{
@@ -177,7 +178,8 @@ JCNAprepare <-
             sample.den = sample.den,
             datExpr = datExpr,
             datTraits = traitData,
-            NetTop = NetTop
+            NetTop = NetTop,
+            sft =sft
           )
         )
 
@@ -550,7 +552,8 @@ JCNAprepare <-
             TSamp.den = TSamp.den,
             datExpr = datExpr,
             datTraits = traitData,
-            NetTop = NetTop
+            NetTop = NetTop,
+            sft = sft
           )
         )
 
@@ -560,7 +563,8 @@ JCNAprepare <-
             sample.den = sample.den,
             datExpr = datExpr,
             datTraits = traitData,
-            NetTop = NetTop
+            NetTop = NetTop,
+            sft = sft
           )
         )
 
