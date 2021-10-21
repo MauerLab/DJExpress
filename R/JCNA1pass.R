@@ -151,7 +151,7 @@ JCNA1pass <-
             verbose = 3,
             indent = 0)
   {
-    sft <- NULL
+    sft <- prepare.out$sft
     datExpr <- prepare.out$datExpr
     print("Constructing the junction network and modules")
     selected.p <-
