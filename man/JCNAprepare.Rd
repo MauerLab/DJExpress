@@ -78,6 +78,6 @@ colnames(DJEanlz$v.norm)[grep("TCGA", colnames(DJEanlz$v.norm))] <- paste0("TCGA
 seq(1,length(colnames(DJEanlz$v.norm)[grep("TCGA", colnames(DJEanlz$v.norm))]), 1))
 Group1 <- colnames(DJEanlz$v.norm$E)[grep("SRR", colnames(DJEanlz$v.norm$E))]
 Jprep <- JCNAprepare(analize.out=DJEanlz, Group1 = Group1,
-traitData = SF.exp, abline.threshold=107, input.type = "DJEanalize.out")
+traitData = SF.exp, abline.threshold=60, input.type = "DJEanalize.out")
 }
 }
