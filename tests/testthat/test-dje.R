@@ -1,0 +1,10 @@
+test_that("dje output is class list", {
+ fit.norm0 <- system.file("extdata", "fit.norm.rds", package = "DJExpress")
+ fit.norm <- readRDS(fit.norm0)
+ groupID0 <- system.file("extdata", "groupID.rds", package = "DJExpress")
+ groupID <- readRDS(groupID0)
+ junctionID0 <- system.file("extdata", "junctionID.rds", package = "DJExpress")
+ junctionID <- readRDS(junctionID0)
+ dje.out <- DJExpress::dje(fit = fit.norm, geneid=groupID, junctionID=junctionID)
+  expect_type(dje.out, "list")
+})
