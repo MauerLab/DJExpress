@@ -53,9 +53,11 @@ Performs weighted junction co-expression network analysis using gene expression 
 }
 \examples{
 \dontrun{
-gtf0 <- system.file("extdata", "chr1.gtf", package = "DJExpress")
+gtf0 <- system.file("extdata", "chr1.gtf.gz", package = "DJExpress")
 gexp <- system.file("extdata", "genExpr.rds", package = "DJExpress")
 filgenExpr <- readRDS(gexp)
+J1pass0 <- system.file("extdata", "J1pass.rds", package = "DJExpress")
+J1pass <- readRDS(J1pass0)
 JgPrep <- JCNAgenePrepare(pass1.out = J1pass, genExpr = filgenExpr,
                           gtf=gtf0, networkType = "unsigned", cor.method = "bicor")
 }
