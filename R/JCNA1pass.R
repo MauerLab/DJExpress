@@ -208,7 +208,7 @@ JCNA1pass <-
     ))))
     print(table(net$colors))
     print("Label 0 is reserved for genes outside of all modules")
-    moduleColors = WGCNA::labels2colors(net$colors)
+    moduleColors = as.character(net$colors)
     module.den <- list()
     for (i in 1:length(net$blockGenes)) {
         WGCNA::plotDendroAndColors(
