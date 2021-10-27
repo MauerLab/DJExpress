@@ -298,7 +298,7 @@ DJEplotSplice <-
             ggplot2::geom_rect(data=domain.to.genome.geneID, mapping=ggplot2::aes(xmin=chr_start, xmax=chr_end, ymin=y1, ymax=y2, fill=Domain))+
             ggplot2::scale_fill_manual(values = mycolors)+
             ggplot2::labs(fill = "Domains and PTMs")+
-            ggplot2::geom_segment(ggplot2::aes(x = arrow.dir[1], y = 1.9, xend = arrow.dir[2], yend = 1.9),
+            ggplot2::geom_segment(ggplot2::aes(x = unlist(arrow.dir[[1]][1]), y = 1.9, xend = unlist(arrow.dir[[1]][2]), yend = 1.9),
                                   arrow = ggplot2::arrow(length = ggplot2::unit(0.5, "cm"),type = "closed"), color="black", alpha=1) +
             ggplot2::geom_curve(ggplot2::aes(x = x1, y = y1, xend = x2, yend = y2),
                                 data = targetjunct[[1]], color=junct_col[[1]], curvature = -1, ncp = 10, linetype=2)+
@@ -321,7 +321,7 @@ DJEplotSplice <-
             ggplot2::geom_rect(data=domain.to.genome.geneID, mapping=ggplot2::aes(xmin=chr_start, xmax=chr_end, ymin=y1, ymax=y2, fill=Domain))+
             ggplot2::scale_fill_manual(values = mycolors)+
             ggplot2::labs(fill = "Domains and PTMs")+
-            ggplot2::geom_segment(ggplot2::aes(x = arrow.dir[1], y = 1.9, xend = arrow.dir[2], yend = 1.9),
+            ggplot2::geom_segment(ggplot2::aes(x = unlist(arrow.dir[[1]][1]), y = 1.9, xend = unlist(arrow.dir[[1]][2]), yend = 1.9),
                                   arrow = ggplot2::arrow(length = ggplot2::unit(0.5, "cm"),type = "closed"), color="black", alpha=1) +
             ggplot2::geom_curve(ggplot2::aes(x = x1, y = y1, xend = x2, yend = y2),
                                 data = targetjunct[[1]], color=junct_col[[1]], curvature = -1, ncp = 10, linetype=2)+
@@ -346,7 +346,7 @@ DJEplotSplice <-
             ggplot2::geom_rect(data=domain.to.genome.geneID, mapping=ggplot2::aes(xmin=chr_start, xmax=chr_end, ymin=y1, ymax=y2, fill=Domain))+
             ggplot2::scale_fill_manual(values = mycolors)+
             ggplot2::labs(fill = "Domains and PTMs")+
-            ggplot2::geom_segment(ggplot2::aes(x = arrow.dir[1], y = 1.9, xend = arrow.dir[2], yend = 1.9),
+            ggplot2::geom_segment(ggplot2::aes(x = unlist(arrow.dir[[1]][1]), y = 1.9, xend = unlist(arrow.dir[[1]][2]), yend = 1.9),
                                   arrow = ggplot2::arrow(length = ggplot2::unit(0.5, "cm"),type = "closed"), color="black", alpha=1) +
             ggplot2::geom_curve(ggplot2::aes(x = x1, y = y1, xend = x2, yend = y2),
                                 data = targetjunct[[1]], color=junct_col[[1]], curvature = -1, ncp = 10, linetype=2)+
@@ -373,7 +373,7 @@ DJEplotSplice <-
             ggplot2::geom_rect(data=domain.to.genome.geneID, mapping=ggplot2::aes(xmin=chr_start, xmax=chr_end, ymin=y1, ymax=y2, fill=Domain))+
             ggplot2::scale_fill_manual(values = mycolors)+
             ggplot2::labs(fill = "Domains and PTMs")+
-            ggplot2::geom_segment(ggplot2::aes(x = arrow.dir[1], y = 1.9, xend = arrow.dir[2], yend = 1.9),
+            ggplot2::geom_segment(ggplot2::aes(x = unlist(arrow.dir[[1]][1]), y = 1.9, xend = unlist(arrow.dir[[1]][2]), yend = 1.9),
                                   arrow = ggplot2::arrow(length = ggplot2::unit(0.5, "cm"),type = "closed"), color="black", alpha=1) +
             ggplot2::geom_curve(ggplot2::aes(x = x1, y = y1, xend = x2, yend = y2),
                                 data = targetjunct[[1]], color=junct_col[[1]], curvature = -1, ncp = 10, linetype=2)+
@@ -402,7 +402,7 @@ DJEplotSplice <-
             ggplot2::geom_rect(data=domain.to.genome.geneID, mapping=ggplot2::aes(xmin=chr_start, xmax=chr_end, ymin=y1, ymax=y2, fill=Domain))+
             ggplot2::scale_fill_manual(values = mycolors)+
             ggplot2::labs(fill = "Domains and PTMs")+
-            ggplot2::geom_segment(ggplot2::aes(x = arrow.dir[1], y = 1.9, xend = arrow.dir[2], yend = 1.9),
+            ggplot2::geom_segment(ggplot2::aes(x = unlist(arrow.dir[[1]][1]), y = 1.9, xend = unlist(arrow.dir[[1]][2]), yend = 1.9),
                                   arrow = ggplot2::arrow(length = ggplot2::unit(0.5, "cm"),type = "closed"), color="black", alpha=1) +
             ggplot2::geom_curve(ggplot2::aes(x = x1, y = y1, xend = x2, yend = y2),
                                 data = targetjunct[[1]], color=junct_col[[1]], curvature = -1, ncp = 10, linetype=2)+
@@ -517,7 +517,7 @@ DJEplotSplice <-
               ggplot2::geom_rect(data=domain.to.genome.geneID, mapping=ggplot2::aes(xmin=chr_start, xmax=chr_end, ymin=y1, ymax=y2, fill=Domain))+
               ggplot2::scale_fill_manual(values = mycolors)+
               ggplot2::labs(fill = "Domains and PTMs")+
-              ggplot2::geom_segment(ggplot2::aes(x = arrow.dir[1], y = 1.9, xend = arrow.dir[2], yend = 1.9),
+              ggplot2::geom_segment(ggplot2::aes(x = unlist(arrow.dir[[1]][1]), y = 1.9, xend = unlist(arrow.dir[[1]][2]), yend = 1.9),
                                     arrow = ggplot2::arrow(length = ggplot2::unit(0.5, "cm"),type = "closed"), color="black", alpha=1) +
               ggplot2::geom_curve(ggplot2::aes(x = x1, y = y1, xend = x2, yend = y2),
                                   data = targetjunct[[1]], color=junct_col[[1]], curvature = -1, ncp = 10, linetype=2)+
@@ -540,7 +540,7 @@ DJEplotSplice <-
               ggplot2::geom_rect(data=domain.to.genome.geneID, mapping=ggplot2::aes(xmin=chr_start, xmax=chr_end, ymin=y1, ymax=y2, fill=Domain))+
               ggplot2::scale_fill_manual(values = mycolors)+
               ggplot2::labs(fill = "Domains and PTMs")+
-              ggplot2::geom_segment(ggplot2::aes(x = arrow.dir[1], y = 1.9, xend = arrow.dir[2], yend = 1.9),
+              ggplot2::geom_segment(ggplot2::aes(x = unlist(arrow.dir[[1]][1]), y = 1.9, xend = unlist(arrow.dir[[1]][2]), yend = 1.9),
                                     arrow = ggplot2::arrow(length = ggplot2::unit(0.5, "cm"),type = "closed"), color="black", alpha=1) +
               ggplot2::geom_curve(ggplot2::aes(x = x1, y = y1, xend = x2, yend = y2),
                                   data = targetjunct[[1]], color=junct_col[[1]], curvature = -1, ncp = 10, linetype=2)+
@@ -565,7 +565,7 @@ DJEplotSplice <-
               ggplot2::geom_rect(data=domain.to.genome.geneID, mapping=ggplot2::aes(xmin=chr_start, xmax=chr_end, ymin=y1, ymax=y2, fill=Domain))+
               ggplot2::scale_fill_manual(values = mycolors)+
               ggplot2::labs(fill = "Domains and PTMs")+
-              ggplot2::geom_segment(ggplot2::aes(x = arrow.dir[1], y = 1.9, xend = arrow.dir[2], yend = 1.9),
+              ggplot2::geom_segment(ggplot2::aes(x = unlist(arrow.dir[[1]][1]), y = 1.9, xend = unlist(arrow.dir[[1]][2]), yend = 1.9),
                                     arrow = ggplot2::arrow(length = ggplot2::unit(0.5, "cm"),type = "closed"), color="black", alpha=1) +
               ggplot2::geom_curve(ggplot2::aes(x = x1, y = y1, xend = x2, yend = y2),
                                   data = targetjunct[[1]], color=junct_col[[1]], curvature = -1, ncp = 10, linetype=2)+
@@ -592,7 +592,7 @@ DJEplotSplice <-
               ggplot2::geom_rect(data=domain.to.genome.geneID, mapping=ggplot2::aes(xmin=chr_start, xmax=chr_end, ymin=y1, ymax=y2, fill=Domain))+
               ggplot2::scale_fill_manual(values = mycolors)+
               ggplot2::labs(fill = "Domains and PTMs")+
-              ggplot2::geom_segment(ggplot2::aes(x = arrow.dir[1], y = 1.9, xend = arrow.dir[2], yend = 1.9),
+              ggplot2::geom_segment(ggplot2::aes(x = unlist(arrow.dir[[1]][1]), y = 1.9, xend = unlist(arrow.dir[[1]][2]), yend = 1.9),
                                     arrow = ggplot2::arrow(length = ggplot2::unit(0.5, "cm"),type = "closed"), color="black", alpha=1) +
               ggplot2::geom_curve(ggplot2::aes(x = x1, y = y1, xend = x2, yend = y2),
                                   data = targetjunct[[1]], color=junct_col[[1]], curvature = -1, ncp = 10, linetype=2)+
@@ -621,7 +621,7 @@ DJEplotSplice <-
               ggplot2::geom_rect(data=domain.to.genome.geneID, mapping=ggplot2::aes(xmin=chr_start, xmax=chr_end, ymin=y1, ymax=y2, fill=Domain))+
               ggplot2::scale_fill_manual(values = mycolors)+
               ggplot2::labs(fill = "Domains and PTMs")+
-              ggplot2::geom_segment(ggplot2::aes(x = arrow.dir[1], y = 1.9, xend = arrow.dir[2], yend = 1.9),
+              ggplot2::geom_segment(ggplot2::aes(x = unlist(arrow.dir[[1]][1]), y = 1.9, xend = unlist(arrow.dir[[1]][2]), yend = 1.9),
                                     arrow = ggplot2::arrow(length = ggplot2::unit(0.5, "cm"),type = "closed"), color="black", alpha=1) +
               ggplot2::geom_curve(ggplot2::aes(x = x1, y = y1, xend = x2, yend = y2),
                                   data = targetjunct[[1]], color=junct_col[[1]], curvature = -1, ncp = 10, linetype=2)+
