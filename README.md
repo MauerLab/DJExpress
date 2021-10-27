@@ -521,7 +521,7 @@ iPlot.out <- DJEplotSplice(DJEanlz, geneID="ENAH", logFC = 0.5, FDR = 0.05)
 iPlot.out$plot
 ```
 
-<img src="/Users/paez/Downloads/tutorial_plotSplice.png" width="787" />
+<img src="ReadFig/tutorial_plotSplice.png" width="787" />
 
 Up- and down-regulted Junctions (with both relative and absolute logFC
 values above the specified threshold) are shown in red and blue,
@@ -535,7 +535,7 @@ When the path to a gtf file is provided, iPlot.out object contains an
 additional gene model plot with exon-to-protein domain annotation and
 the localization of a user-selected junction (e.g. the exon skipping
 junction downregulated in ENAH):
-<img src="/Users/paez/Downloads/DJEplotSplice_ENAH.png" width="1192" />
+<img src="ReadFig/DJEplotSplice_ENAH.png" width="1192" />
 
 Colors within exonic regions in the gene model plot indicate the
 presence of protein domains and/or post-translational modifications
@@ -738,7 +738,7 @@ Sr.out <- DJEspliceRadar(DT.out, ordered.junction = "chr1:225688773:225692692:2"
 Sr.out
 ```
 
-<img src="/Users/paez/Downloads/tutorial_spliceradar.png" width="1123" />
+<img src="ReadFig/tutorial_spliceradar.png" width="1123" />
 
 In the SpliceRadar plot, the coefficient of top-ranked correlations
 between the three ENAH junctions is used to map each junction-trait
@@ -878,7 +878,7 @@ summary(Jprep)
 We had defined an abline.threshold of 60, to allow the removal of the
 outlier sample observed in the sample dendrogram:
 
-<img src="/Users/paez/Downloads/tutorial_sampleclust.png" width="1064" />
+<img src="ReadFig/tutorial_sampleclust.png" width="1064" />
 
 **Jprep$NetTop** shows the 2 plots generated during the analysis of
 network topology. The lowest power for which the scale-free topology fit
@@ -891,7 +891,7 @@ construction (**JCNA1pass()** function).
 Jprep$NetTop
 ```
 
-<img src="/Users/paez/Downloads/tutorial_nettop.png" width="1064" />
+<img src="ReadFig/tutorial_nettop.png" width="1064" />
 
 ## 4.2 1-pass JCNA
 
@@ -956,7 +956,7 @@ J1pass$module.den
 
     ## [[1]]
 
-<img src="/Users/paez/Downloads/tutorial_moduleden.png" width="988" />
+<img src="ReadFig/tutorial_moduleden.png" width="988" />
 
 ``` r
 # Assignment of junctions to respective module:
@@ -1242,7 +1242,7 @@ jMT$MMplot
 
 ![](DJExpress_README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
-<img src="/Users/paez/Downloads/tutorial_MMvsJCplot.png" width="787" />
+<img src="ReadFig/tutorial_MMvsJCplot.png" width="787" />
 
 ***jMT$MMplot*** shows an interactive scatterplot of Junction
 Significance (JS) for DDX1 expression vs. Module Membership (MM) in the
