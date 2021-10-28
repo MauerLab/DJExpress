@@ -67,13 +67,14 @@ JCNAModTrait <-
     highplot$JunctMM <- abs(as.numeric(as.character(highplot$JunctMM)))
     highplot$JunctTS <- abs(as.numeric(as.character(highplot$JunctTS)))
     cor.coef <- stats::cor.test(highplot$JunctMM, highplot$JunctTS)
+    modulecol <- WGCNA::labels2colors(pass.out$net$colors)
     MMplot <- highcharter::highchart() %>%
       highcharter::hc_add_series(
         highplot,
         type = "scatter",
         showInLegend = F,
         highcharter::hcaes(x = JunctMM, y = JunctTS),
-        color = module
+        color = modulecol[column]
       ) %>%
       highcharter::hc_title(
         text = paste("Module membership vs. Junction significance for trait\n"),
@@ -91,7 +92,7 @@ JCNAModTrait <-
         align = "center",
         style = list(color = "black", useHTML = TRUE)
       ) %>%
-      highcharter::hc_xAxis(title = list(text = paste("Module Membership in", module, "module"))) %>%
+      highcharter::hc_xAxis(title = list(text = paste("Module Membership in module No.", module, " (", modulecol[column], ")"))) %>%
       highcharter::hc_yAxis(title = list(text = paste("Junction significance for trait", trait))) %>%
       highcharter::hc_tooltip(pointFormat = "junction: {point.junctionID} ",
                               crosshairs = TRUE)
