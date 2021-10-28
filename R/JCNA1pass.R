@@ -197,29 +197,137 @@ JCNA1pass <-
     }
     WGCNA::enableWGCNAThreads(nThreads = nThreads)
     cor <- WGCNA::cor
+    minCoreKMESize = minModuleSize / 3
     if(cor.method=="bicor" | cor.method=="pearson"){
-      net <- WGCNA::blockwiseModules(datExpr, corType= cor.method, power = selected.p)
+      net <- WGCNA::blockwiseModules(datExpr, corType= cor.method, power = selected.p,
+                                     nThreads = 2,
+                                     networkType = "signed",
+                                     cor.method = "bicor",
+                                     replaceMissingAdjacencies = FALSE,
+                                     deepSplit = 2,
+                                     weights = NULL,
+                                     detectCutHeight = 0.995,
+                                     minModuleSize = min(200, ncol(datExpr) / 2),
+                                     blocks = NULL,
+                                     maxBlockSize = 5000,
+                                     blockSizePenaltyPower = 5,
+                                     nPreclusteringCenters = as.integer(min(ncol(datExpr) /20, 100 * ncol(datExpr) /
+                                                                              maxBlockSize)),
+                                     randomSeed = randomSeed,
+                                     checkMissingData = checkMissingData,
+                                     TOMType = TOMType,
+                                     TOMDenom = TOMDenom,
+                                     suppressTOMForZeroAdjacencies = suppressTOMForZeroAdjacencies,
+                                     suppressNegativeTOM = suppressNegativeTOM,
+                                     maxCoreScatter = maxCoreScatter,
+                                     minGap = minGap,
+                                     maxAbsCoreScatter = maxAbsCoreScatter,
+                                     minAbsGap = minAbsGap,
+                                     minSplitHeight = minSplitHeight,
+                                     minAbsSplitHeight = minAbsSplitHeight,
+                                     stabilityLabels = stabilityLabels,
+                                     useBranchEigennodeDissim = useBranchEigennodeDissim,
+                                     minBranchEigennodeDissim = minBranchEigennodeDissim,
+                                     stabilityCriterion = stabilityCriterion,
+                                     minStabilityDissim = minStabilityDissim,
+                                     pamStage = pamStage,
+                                     pamRespectsDendro = pamRespectsDendro,
+                                     reassignThreshold = reassignThreshold,
+                                     minCoreKME = minCoreKME,
+                                     minCoreKMESize = minCoreKMESize,
+                                     minKMEtoStay = minKMEtoStay,
+                                     mergeCutHeight = mergeCutHeight,
+                                     impute = impute,
+                                     trapErrors = trapErrors,
+                                     numericLabels = numericLabels,
+                                     maxPOutliers = maxPOutliers,
+                                     quickCor = quickCor,
+                                     pearsonFallback = pearsonFallback,
+                                     cosineCorrelation = cosineCorrelation,
+                                     loadTOM = loadTOM,
+                                     saveTOMs = saveTOMs,
+                                     saveTOMFileBase = saveTOMFileBase,
+                                     useInternalMatrixAlgebra = useInternalMatrixAlgebra,
+                                     useCorOptionsThroughout = useCorOptionsThroughout,
+                                     verbose = verbose,
+                                     indent = indent)
     }else{
-      net <- WGCNA::blockwiseModules(datExpr, corType= "bicor", power = selected.p)
+      net <- WGCNA::blockwiseModules(datExpr, corType= "bicor", power = selected.p,
+                                     nThreads = 2,
+                                     networkType = "signed",
+                                     cor.method = "bicor",
+                                     replaceMissingAdjacencies = FALSE,
+                                     deepSplit = 2,
+                                     weights = NULL,
+                                     detectCutHeight = 0.995,
+                                     minModuleSize = min(200, ncol(datExpr) / 2),
+                                     blocks = NULL,
+                                     maxBlockSize = 5000,
+                                     blockSizePenaltyPower = 5,
+                                     nPreclusteringCenters = as.integer(min(ncol(datExpr) /20, 100 * ncol(datExpr) /
+                                                                              maxBlockSize)),
+                                     randomSeed = randomSeed,
+                                     checkMissingData = checkMissingData,
+                                     TOMType = TOMType,
+                                     TOMDenom = TOMDenom,
+                                     suppressTOMForZeroAdjacencies = suppressTOMForZeroAdjacencies,
+                                     suppressNegativeTOM = suppressNegativeTOM,
+                                     maxCoreScatter = maxCoreScatter,
+                                     minGap = minGap,
+                                     maxAbsCoreScatter = maxAbsCoreScatter,
+                                     minAbsGap = minAbsGap,
+                                     minSplitHeight = minSplitHeight,
+                                     minAbsSplitHeight = minAbsSplitHeight,
+                                     stabilityLabels = stabilityLabels,
+                                     useBranchEigennodeDissim = useBranchEigennodeDissim,
+                                     minBranchEigennodeDissim = minBranchEigennodeDissim,
+                                     stabilityCriterion = stabilityCriterion,
+                                     minStabilityDissim = minStabilityDissim,
+                                     pamStage = pamStage,
+                                     pamRespectsDendro = pamRespectsDendro,
+                                     reassignThreshold = reassignThreshold,
+                                     minCoreKME = minCoreKME,
+                                     minCoreKMESize = minCoreKMESize,
+                                     minKMEtoStay = minKMEtoStay,
+                                     mergeCutHeight = mergeCutHeight,
+                                     impute = impute,
+                                     trapErrors = trapErrors,
+                                     numericLabels = numericLabels,
+                                     maxPOutliers = maxPOutliers,
+                                     quickCor = quickCor,
+                                     pearsonFallback = pearsonFallback,
+                                     cosineCorrelation = cosineCorrelation,
+                                     loadTOM = loadTOM,
+                                     saveTOMs = saveTOMs,
+                                     saveTOMFileBase = saveTOMFileBase,
+                                     useInternalMatrixAlgebra = useInternalMatrixAlgebra,
+                                     useCorOptionsThroughout = useCorOptionsThroughout,
+                                     verbose = verbose,
+                                     indent = indent)
     }
     cor<-stats::cor
     print(paste0(" modules identified:", as.character(length(
       table(net$colors)
     ))))
     print(table(net$colors))
-    print("Label 0 is reserved for genes outside of all modules")
+    if(length(grepl("[.]", as.character(net$colors)))>=1){
+      warning("Number of junction modules excceds limit of color labels. Those modules will be colored white in the dendrogram (but not removed from the network). Consider changing deepSplit or minModuleSize arguments.")
+      net$colors[grepl("[.]", as.character(net$colors))] <- "white"
+    }
+
+    print("Label 0 (grey color) is reserved for genes outside of all modules")
     moduleColors = as.character(net$colors)
     module.den <- list()
     for (i in 1:length(net$blockGenes)) {
-        WGCNA::plotDendroAndColors(
-          net$dendrograms[[i]],
-          moduleColors[net$blockGenes[[i]]],
-          "Module colors",
-          dendroLabels = FALSE,
-          hang = 0.03,
-          addGuide = TRUE,
-          guideHang = 0.05
-        )
+      WGCNA::plotDendroAndColors(
+        net$dendrograms[[i]],
+        moduleColors[net$blockGenes[[i]]],
+        "Module colors",
+        dendroLabels = FALSE,
+        hang = 0.03,
+        addGuide = TRUE,
+        guideHang = 0.05
+      )
       module.den[[i]] <- grDevices::recordPlot()
       grDevices::dev.off()
     }
@@ -260,7 +368,7 @@ JCNA1pass <-
                        signif(moduleTraitPvalue, 1),
                        ")",
                        sep = "")
-      WGCNA::labeledHeatmap(
+    WGCNA::labeledHeatmap(
       Matrix = moduleTraitCor,
       xLabels = names(allTraits),
       yLabels = names(MEs),
