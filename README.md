@@ -536,7 +536,7 @@ iPlot.out <- DJEplotSplice(DJEanlz, geneID="ENAH", logFC = 0.5, FDR = 0.05)
 iPlot.out$plot
 ```
 
-<img src="/Users/paez/Downloads/tutorial_plotSplice.png" width="787" />
+<img src="ReadFig/tutorial_plotSplice.png" width="787" />
 
 Up- and down-regulted Junctions (with both relative and absolute logFC
 values above the specified threshold) are shown in red and blue,
@@ -564,7 +564,7 @@ plot <-DJEplotSplice(DJEanlz, geneID="ENAH",logFC = 0.5, FDR = 0.05,
 plot$JunctionToGene
 ```
 
-<img src="/Users/paez/Downloads/DJEplotSplice_ENAH.png" width="1192" />
+<img src="ReadFig/DJEplotSplice_ENAH.png" width="1192" />
 
 Colors within exonic regions in the gene model plot indicate the
 presence of protein domains and/or post-translational modifications
@@ -767,7 +767,7 @@ Sr.out <- DJEspliceRadar(DT.out, ordered.junction = "chr1:225688773:225692692:2"
 Sr.out
 ```
 
-<img src="/Users/paez/Downloads/tutorial_spliceradar.png" width="1123" />
+<img src="ReadFig/tutorial_spliceradar.png" width="1123" />
 
 In the SpliceRadar plot, the coefficient of top-ranked correlations
 between the three ENAH junctions is used to map each junction-trait
@@ -897,297 +897,7 @@ traitData = SF.exp, abline.threshold=600, input.type = "DJEanalize.out")
     ##  pickSoftThreshold: calculating connectivity for given powers...
     ##    ..working on genes 1 through 390 of 114639
     ##    ..working on genes 391 through 780 of 114639
-    ##    ..working on genes 781 through 1170 of 114639
-    ##    ..working on genes 1171 through 1560 of 114639
-    ##    ..working on genes 1561 through 1950 of 114639
-    ##    ..working on genes 1951 through 2340 of 114639
-    ##    ..working on genes 2341 through 2730 of 114639
-    ##    ..working on genes 2731 through 3120 of 114639
-    ##    ..working on genes 3121 through 3510 of 114639
-    ##    ..working on genes 3511 through 3900 of 114639
-    ##    ..working on genes 3901 through 4290 of 114639
-    ##    ..working on genes 4291 through 4680 of 114639
-    ##    ..working on genes 4681 through 5070 of 114639
-    ##    ..working on genes 5071 through 5460 of 114639
-    ##    ..working on genes 5461 through 5850 of 114639
-    ##    ..working on genes 5851 through 6240 of 114639
-    ##    ..working on genes 6241 through 6630 of 114639
-    ##    ..working on genes 6631 through 7020 of 114639
-    ##    ..working on genes 7021 through 7410 of 114639
-    ##    ..working on genes 7411 through 7800 of 114639
-    ##    ..working on genes 7801 through 8190 of 114639
-    ##    ..working on genes 8191 through 8580 of 114639
-    ##    ..working on genes 8581 through 8970 of 114639
-    ##    ..working on genes 8971 through 9360 of 114639
-    ##    ..working on genes 9361 through 9750 of 114639
-    ##    ..working on genes 9751 through 10140 of 114639
-    ##    ..working on genes 10141 through 10530 of 114639
-    ##    ..working on genes 10531 through 10920 of 114639
-    ##    ..working on genes 10921 through 11310 of 114639
-    ##    ..working on genes 11311 through 11700 of 114639
-    ##    ..working on genes 11701 through 12090 of 114639
-    ##    ..working on genes 12091 through 12480 of 114639
-    ##    ..working on genes 12481 through 12870 of 114639
-    ##    ..working on genes 12871 through 13260 of 114639
-    ##    ..working on genes 13261 through 13650 of 114639
-    ##    ..working on genes 13651 through 14040 of 114639
-    ##    ..working on genes 14041 through 14430 of 114639
-    ##    ..working on genes 14431 through 14820 of 114639
-    ##    ..working on genes 14821 through 15210 of 114639
-    ##    ..working on genes 15211 through 15600 of 114639
-    ##    ..working on genes 15601 through 15990 of 114639
-    ##    ..working on genes 15991 through 16380 of 114639
-    ##    ..working on genes 16381 through 16770 of 114639
-    ##    ..working on genes 16771 through 17160 of 114639
-    ##    ..working on genes 17161 through 17550 of 114639
-    ##    ..working on genes 17551 through 17940 of 114639
-    ##    ..working on genes 17941 through 18330 of 114639
-    ##    ..working on genes 18331 through 18720 of 114639
-    ##    ..working on genes 18721 through 19110 of 114639
-    ##    ..working on genes 19111 through 19500 of 114639
-    ##    ..working on genes 19501 through 19890 of 114639
-    ##    ..working on genes 19891 through 20280 of 114639
-    ##    ..working on genes 20281 through 20670 of 114639
-    ##    ..working on genes 20671 through 21060 of 114639
-    ##    ..working on genes 21061 through 21450 of 114639
-    ##    ..working on genes 21451 through 21840 of 114639
-    ##    ..working on genes 21841 through 22230 of 114639
-    ##    ..working on genes 22231 through 22620 of 114639
-    ##    ..working on genes 22621 through 23010 of 114639
-    ##    ..working on genes 23011 through 23400 of 114639
-    ##    ..working on genes 23401 through 23790 of 114639
-    ##    ..working on genes 23791 through 24180 of 114639
-    ##    ..working on genes 24181 through 24570 of 114639
-    ##    ..working on genes 24571 through 24960 of 114639
-    ##    ..working on genes 24961 through 25350 of 114639
-    ##    ..working on genes 25351 through 25740 of 114639
-    ##    ..working on genes 25741 through 26130 of 114639
-    ##    ..working on genes 26131 through 26520 of 114639
-    ##    ..working on genes 26521 through 26910 of 114639
-    ##    ..working on genes 26911 through 27300 of 114639
-    ##    ..working on genes 27301 through 27690 of 114639
-    ##    ..working on genes 27691 through 28080 of 114639
-    ##    ..working on genes 28081 through 28470 of 114639
-    ##    ..working on genes 28471 through 28860 of 114639
-    ##    ..working on genes 28861 through 29250 of 114639
-    ##    ..working on genes 29251 through 29640 of 114639
-    ##    ..working on genes 29641 through 30030 of 114639
-    ##    ..working on genes 30031 through 30420 of 114639
-    ##    ..working on genes 30421 through 30810 of 114639
-    ##    ..working on genes 30811 through 31200 of 114639
-    ##    ..working on genes 31201 through 31590 of 114639
-    ##    ..working on genes 31591 through 31980 of 114639
-    ##    ..working on genes 31981 through 32370 of 114639
-    ##    ..working on genes 32371 through 32760 of 114639
-    ##    ..working on genes 32761 through 33150 of 114639
-    ##    ..working on genes 33151 through 33540 of 114639
-    ##    ..working on genes 33541 through 33930 of 114639
-    ##    ..working on genes 33931 through 34320 of 114639
-    ##    ..working on genes 34321 through 34710 of 114639
-    ##    ..working on genes 34711 through 35100 of 114639
-    ##    ..working on genes 35101 through 35490 of 114639
-    ##    ..working on genes 35491 through 35880 of 114639
-    ##    ..working on genes 35881 through 36270 of 114639
-    ##    ..working on genes 36271 through 36660 of 114639
-    ##    ..working on genes 36661 through 37050 of 114639
-    ##    ..working on genes 37051 through 37440 of 114639
-    ##    ..working on genes 37441 through 37830 of 114639
-    ##    ..working on genes 37831 through 38220 of 114639
-    ##    ..working on genes 38221 through 38610 of 114639
-    ##    ..working on genes 38611 through 39000 of 114639
-    ##    ..working on genes 39001 through 39390 of 114639
-    ##    ..working on genes 39391 through 39780 of 114639
-    ##    ..working on genes 39781 through 40170 of 114639
-    ##    ..working on genes 40171 through 40560 of 114639
-    ##    ..working on genes 40561 through 40950 of 114639
-    ##    ..working on genes 40951 through 41340 of 114639
-    ##    ..working on genes 41341 through 41730 of 114639
-    ##    ..working on genes 41731 through 42120 of 114639
-    ##    ..working on genes 42121 through 42510 of 114639
-    ##    ..working on genes 42511 through 42900 of 114639
-    ##    ..working on genes 42901 through 43290 of 114639
-    ##    ..working on genes 43291 through 43680 of 114639
-    ##    ..working on genes 43681 through 44070 of 114639
-    ##    ..working on genes 44071 through 44460 of 114639
-    ##    ..working on genes 44461 through 44850 of 114639
-    ##    ..working on genes 44851 through 45240 of 114639
-    ##    ..working on genes 45241 through 45630 of 114639
-    ##    ..working on genes 45631 through 46020 of 114639
-    ##    ..working on genes 46021 through 46410 of 114639
-    ##    ..working on genes 46411 through 46800 of 114639
-    ##    ..working on genes 46801 through 47190 of 114639
-    ##    ..working on genes 47191 through 47580 of 114639
-    ##    ..working on genes 47581 through 47970 of 114639
-    ##    ..working on genes 47971 through 48360 of 114639
-    ##    ..working on genes 48361 through 48750 of 114639
-    ##    ..working on genes 48751 through 49140 of 114639
-    ##    ..working on genes 49141 through 49530 of 114639
-    ##    ..working on genes 49531 through 49920 of 114639
-    ##    ..working on genes 49921 through 50310 of 114639
-    ##    ..working on genes 50311 through 50700 of 114639
-    ##    ..working on genes 50701 through 51090 of 114639
-    ##    ..working on genes 51091 through 51480 of 114639
-    ##    ..working on genes 51481 through 51870 of 114639
-    ##    ..working on genes 51871 through 52260 of 114639
-    ##    ..working on genes 52261 through 52650 of 114639
-    ##    ..working on genes 52651 through 53040 of 114639
-    ##    ..working on genes 53041 through 53430 of 114639
-    ##    ..working on genes 53431 through 53820 of 114639
-    ##    ..working on genes 53821 through 54210 of 114639
-    ##    ..working on genes 54211 through 54600 of 114639
-    ##    ..working on genes 54601 through 54990 of 114639
-    ##    ..working on genes 54991 through 55380 of 114639
-    ##    ..working on genes 55381 through 55770 of 114639
-    ##    ..working on genes 55771 through 56160 of 114639
-    ##    ..working on genes 56161 through 56550 of 114639
-    ##    ..working on genes 56551 through 56940 of 114639
-    ##    ..working on genes 56941 through 57330 of 114639
-    ##    ..working on genes 57331 through 57720 of 114639
-    ##    ..working on genes 57721 through 58110 of 114639
-    ##    ..working on genes 58111 through 58500 of 114639
-    ##    ..working on genes 58501 through 58890 of 114639
-    ##    ..working on genes 58891 through 59280 of 114639
-    ##    ..working on genes 59281 through 59670 of 114639
-    ##    ..working on genes 59671 through 60060 of 114639
-    ##    ..working on genes 60061 through 60450 of 114639
-    ##    ..working on genes 60451 through 60840 of 114639
-    ##    ..working on genes 60841 through 61230 of 114639
-    ##    ..working on genes 61231 through 61620 of 114639
-    ##    ..working on genes 61621 through 62010 of 114639
-    ##    ..working on genes 62011 through 62400 of 114639
-    ##    ..working on genes 62401 through 62790 of 114639
-    ##    ..working on genes 62791 through 63180 of 114639
-    ##    ..working on genes 63181 through 63570 of 114639
-    ##    ..working on genes 63571 through 63960 of 114639
-    ##    ..working on genes 63961 through 64350 of 114639
-    ##    ..working on genes 64351 through 64740 of 114639
-    ##    ..working on genes 64741 through 65130 of 114639
-    ##    ..working on genes 65131 through 65520 of 114639
-    ##    ..working on genes 65521 through 65910 of 114639
-    ##    ..working on genes 65911 through 66300 of 114639
-    ##    ..working on genes 66301 through 66690 of 114639
-    ##    ..working on genes 66691 through 67080 of 114639
-    ##    ..working on genes 67081 through 67470 of 114639
-    ##    ..working on genes 67471 through 67860 of 114639
-    ##    ..working on genes 67861 through 68250 of 114639
-    ##    ..working on genes 68251 through 68640 of 114639
-    ##    ..working on genes 68641 through 69030 of 114639
-    ##    ..working on genes 69031 through 69420 of 114639
-    ##    ..working on genes 69421 through 69810 of 114639
-    ##    ..working on genes 69811 through 70200 of 114639
-    ##    ..working on genes 70201 through 70590 of 114639
-    ##    ..working on genes 70591 through 70980 of 114639
-    ##    ..working on genes 70981 through 71370 of 114639
-    ##    ..working on genes 71371 through 71760 of 114639
-    ##    ..working on genes 71761 through 72150 of 114639
-    ##    ..working on genes 72151 through 72540 of 114639
-    ##    ..working on genes 72541 through 72930 of 114639
-    ##    ..working on genes 72931 through 73320 of 114639
-    ##    ..working on genes 73321 through 73710 of 114639
-    ##    ..working on genes 73711 through 74100 of 114639
-    ##    ..working on genes 74101 through 74490 of 114639
-    ##    ..working on genes 74491 through 74880 of 114639
-    ##    ..working on genes 74881 through 75270 of 114639
-    ##    ..working on genes 75271 through 75660 of 114639
-    ##    ..working on genes 75661 through 76050 of 114639
-    ##    ..working on genes 76051 through 76440 of 114639
-    ##    ..working on genes 76441 through 76830 of 114639
-    ##    ..working on genes 76831 through 77220 of 114639
-    ##    ..working on genes 77221 through 77610 of 114639
-    ##    ..working on genes 77611 through 78000 of 114639
-    ##    ..working on genes 78001 through 78390 of 114639
-    ##    ..working on genes 78391 through 78780 of 114639
-    ##    ..working on genes 78781 through 79170 of 114639
-    ##    ..working on genes 79171 through 79560 of 114639
-    ##    ..working on genes 79561 through 79950 of 114639
-    ##    ..working on genes 79951 through 80340 of 114639
-    ##    ..working on genes 80341 through 80730 of 114639
-    ##    ..working on genes 80731 through 81120 of 114639
-    ##    ..working on genes 81121 through 81510 of 114639
-    ##    ..working on genes 81511 through 81900 of 114639
-    ##    ..working on genes 81901 through 82290 of 114639
-    ##    ..working on genes 82291 through 82680 of 114639
-    ##    ..working on genes 82681 through 83070 of 114639
-    ##    ..working on genes 83071 through 83460 of 114639
-    ##    ..working on genes 83461 through 83850 of 114639
-    ##    ..working on genes 83851 through 84240 of 114639
-    ##    ..working on genes 84241 through 84630 of 114639
-    ##    ..working on genes 84631 through 85020 of 114639
-    ##    ..working on genes 85021 through 85410 of 114639
-    ##    ..working on genes 85411 through 85800 of 114639
-    ##    ..working on genes 85801 through 86190 of 114639
-    ##    ..working on genes 86191 through 86580 of 114639
-    ##    ..working on genes 86581 through 86970 of 114639
-    ##    ..working on genes 86971 through 87360 of 114639
-    ##    ..working on genes 87361 through 87750 of 114639
-    ##    ..working on genes 87751 through 88140 of 114639
-    ##    ..working on genes 88141 through 88530 of 114639
-    ##    ..working on genes 88531 through 88920 of 114639
-    ##    ..working on genes 88921 through 89310 of 114639
-    ##    ..working on genes 89311 through 89700 of 114639
-    ##    ..working on genes 89701 through 90090 of 114639
-    ##    ..working on genes 90091 through 90480 of 114639
-    ##    ..working on genes 90481 through 90870 of 114639
-    ##    ..working on genes 90871 through 91260 of 114639
-    ##    ..working on genes 91261 through 91650 of 114639
-    ##    ..working on genes 91651 through 92040 of 114639
-    ##    ..working on genes 92041 through 92430 of 114639
-    ##    ..working on genes 92431 through 92820 of 114639
-    ##    ..working on genes 92821 through 93210 of 114639
-    ##    ..working on genes 93211 through 93600 of 114639
-    ##    ..working on genes 93601 through 93990 of 114639
-    ##    ..working on genes 93991 through 94380 of 114639
-    ##    ..working on genes 94381 through 94770 of 114639
-    ##    ..working on genes 94771 through 95160 of 114639
-    ##    ..working on genes 95161 through 95550 of 114639
-    ##    ..working on genes 95551 through 95940 of 114639
-    ##    ..working on genes 95941 through 96330 of 114639
-    ##    ..working on genes 96331 through 96720 of 114639
-    ##    ..working on genes 96721 through 97110 of 114639
-    ##    ..working on genes 97111 through 97500 of 114639
-    ##    ..working on genes 97501 through 97890 of 114639
-    ##    ..working on genes 97891 through 98280 of 114639
-    ##    ..working on genes 98281 through 98670 of 114639
-    ##    ..working on genes 98671 through 99060 of 114639
-    ##    ..working on genes 99061 through 99450 of 114639
-    ##    ..working on genes 99451 through 99840 of 114639
-    ##    ..working on genes 99841 through 100230 of 114639
-    ##    ..working on genes 100231 through 100620 of 114639
-    ##    ..working on genes 100621 through 101010 of 114639
-    ##    ..working on genes 101011 through 101400 of 114639
-    ##    ..working on genes 101401 through 101790 of 114639
-    ##    ..working on genes 101791 through 102180 of 114639
-    ##    ..working on genes 102181 through 102570 of 114639
-    ##    ..working on genes 102571 through 102960 of 114639
-    ##    ..working on genes 102961 through 103350 of 114639
-    ##    ..working on genes 103351 through 103740 of 114639
-    ##    ..working on genes 103741 through 104130 of 114639
-    ##    ..working on genes 104131 through 104520 of 114639
-    ##    ..working on genes 104521 through 104910 of 114639
-    ##    ..working on genes 104911 through 105300 of 114639
-    ##    ..working on genes 105301 through 105690 of 114639
-    ##    ..working on genes 105691 through 106080 of 114639
-    ##    ..working on genes 106081 through 106470 of 114639
-    ##    ..working on genes 106471 through 106860 of 114639
-    ##    ..working on genes 106861 through 107250 of 114639
-    ##    ..working on genes 107251 through 107640 of 114639
-    ##    ..working on genes 107641 through 108030 of 114639
-    ##    ..working on genes 108031 through 108420 of 114639
-    ##    ..working on genes 108421 through 108810 of 114639
-    ##    ..working on genes 108811 through 109200 of 114639
-    ##    ..working on genes 109201 through 109590 of 114639
-    ##    ..working on genes 109591 through 109980 of 114639
-    ##    ..working on genes 109981 through 110370 of 114639
-    ##    ..working on genes 110371 through 110760 of 114639
-    ##    ..working on genes 110761 through 111150 of 114639
-    ##    ..working on genes 111151 through 111540 of 114639
-    ##    ..working on genes 111541 through 111930 of 114639
-    ##    ..working on genes 111931 through 112320 of 114639
-    ##    ..working on genes 112321 through 112710 of 114639
-    ##    ..working on genes 112711 through 113100 of 114639
-    ##    ..working on genes 113101 through 113490 of 114639
-    ##    ..working on genes 113491 through 113880 of 114639
-    ##    ..working on genes 113881 through 114270 of 114639
+    ##    ...     
     ##    ..working on genes 114271 through 114639 of 114639
     ##    Power SFT.R.sq   slope truncated.R.sq  mean.k. median.k. max.k.
     ## 1      1 0.000349  0.0636          0.883 25400.00  24400.00  41600
@@ -1221,7 +931,7 @@ summary(Jprep)
 We had defined an abline.threshold of 60, to allow the removal of the
 outlier sample observed in the sample dendrogram:
 
-<img src="/Users/paez/Downloads/tutorial_sampleclust.png" width="571" />
+<img src="ReadFig/tutorial_sampleclust.png" width="571" />
 
 **Jprep$NetTop** shows the 2 plots generated during the analysis of
 network topology. The lowest power for which the scale-free topology fit
@@ -1234,7 +944,7 @@ construction (**JCNA1pass()** function).
 Jprep$NetTop
 ```
 
-<img src="/Users/paez/Downloads/tutorial_nettop.png" width="571" />
+<img src="ReadFig/tutorial_nettop.png" width="571" />
 
 ## 4.2 1-pass JCNA
 
@@ -1300,342 +1010,7 @@ J1pass <- JCNA1pass(Jprep, cor.method = "bicor", nThreads = 2)
     ##  ....detecting modules..
     ##  ....calculating module eigengenes..
     ##  ....checking kME in modules..
-    ##      ..removing 20 genes from module 1 because their KME is too low.
-    ##      ..removing 4 genes from module 2 because their KME is too low.
-    ##      ..removing 1 genes from module 3 because their KME is too low.
-    ##  ..Working on block 3 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 3 into file JCNA_blockwiseTOM-block.3.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 8 genes from module 1 because their KME is too low.
-    ##      ..removing 77 genes from module 3 because their KME is too low.
-    ##  ..Working on block 4 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 4 into file JCNA_blockwiseTOM-block.4.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 65 genes from module 1 because their KME is too low.
-    ##      ..removing 69 genes from module 2 because their KME is too low.
-    ##      ..removing 18 genes from module 3 because their KME is too low.
-    ##      ..removing 214 genes from module 4 because their KME is too low.
-    ##      ..removing 4 genes from module 5 because their KME is too low.
-    ##      ..removing 1 genes from module 6 because their KME is too low.
-    ##      ..removing 3 genes from module 7 because their KME is too low.
-    ##  ..Working on block 5 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 5 into file JCNA_blockwiseTOM-block.5.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 61 genes from module 1 because their KME is too low.
-    ##      ..removing 3 genes from module 2 because their KME is too low.
-    ##      ..removing 36 genes from module 3 because their KME is too low.
-    ##      ..removing 7 genes from module 4 because their KME is too low.
-    ##  ..Working on block 6 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 6 into file JCNA_blockwiseTOM-block.6.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 5 genes from module 1 because their KME is too low.
-    ##      ..removing 3 genes from module 2 because their KME is too low.
-    ##      ..removing 11 genes from module 3 because their KME is too low.
-    ##      ..removing 10 genes from module 4 because their KME is too low.
-    ##      ..removing 1 genes from module 5 because their KME is too low.
-    ##  ..Working on block 7 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 7 into file JCNA_blockwiseTOM-block.7.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 8 genes from module 1 because their KME is too low.
-    ##      ..removing 4 genes from module 2 because their KME is too low.
-    ##      ..removing 1 genes from module 3 because their KME is too low.
-    ##  ..Working on block 8 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 8 into file JCNA_blockwiseTOM-block.8.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 22 genes from module 1 because their KME is too low.
-    ##      ..removing 6 genes from module 2 because their KME is too low.
-    ##      ..removing 7 genes from module 3 because their KME is too low.
-    ##  ..Working on block 9 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 9 into file JCNA_blockwiseTOM-block.9.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 29 genes from module 1 because their KME is too low.
-    ##      ..removing 8 genes from module 2 because their KME is too low.
-    ##      ..removing 1 genes from module 3 because their KME is too low.
-    ##      ..removing 3 genes from module 4 because their KME is too low.
-    ##      ..removing 2 genes from module 5 because their KME is too low.
-    ##  ..Working on block 10 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 10 into file JCNA_blockwiseTOM-block.10.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 20 genes from module 1 because their KME is too low.
-    ##      ..removing 6 genes from module 2 because their KME is too low.
-    ##  ..Working on block 11 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 11 into file JCNA_blockwiseTOM-block.11.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 60 genes from module 1 because their KME is too low.
-    ##  ..Working on block 12 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 12 into file JCNA_blockwiseTOM-block.12.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 80 genes from module 1 because their KME is too low.
-    ##      ..removing 29 genes from module 2 because their KME is too low.
-    ##      ..removing 3 genes from module 4 because their KME is too low.
-    ##      ..removing 1 genes from module 5 because their KME is too low.
-    ##  ..Working on block 13 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 13 into file JCNA_blockwiseTOM-block.13.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 36 genes from module 1 because their KME is too low.
-    ##      ..removing 14 genes from module 2 because their KME is too low.
-    ##      ..removing 6 genes from module 3 because their KME is too low.
-    ##  ..Working on block 14 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 14 into file JCNA_blockwiseTOM-block.14.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 3 genes from module 1 because their KME is too low.
-    ##  ..Working on block 15 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 15 into file JCNA_blockwiseTOM-block.15.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  No modules detected in block 15
-    ##  ..Working on block 16 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 16 into file JCNA_blockwiseTOM-block.16.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 43 genes from module 1 because their KME is too low.
-    ##  ..Working on block 17 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 17 into file JCNA_blockwiseTOM-block.17.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  No modules detected in block 17
-    ##  ..Working on block 18 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 18 into file JCNA_blockwiseTOM-block.18.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  No modules detected in block 18
-    ##  ..Working on block 19 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 19 into file JCNA_blockwiseTOM-block.19.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 26 genes from module 1 because their KME is too low.
-    ##      ..removing 18 genes from module 2 because their KME is too low.
-    ##      ..removing 4 genes from module 3 because their KME is too low.
-    ##  ..Working on block 20 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 20 into file JCNA_blockwiseTOM-block.20.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 11 genes from module 1 because their KME is too low.
-    ##  ..Working on block 21 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 21 into file JCNA_blockwiseTOM-block.21.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 176 genes from module 1 because their KME is too low.
-    ##  ..Working on block 22 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 22 into file JCNA_blockwiseTOM-block.22.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 81 genes from module 1 because their KME is too low.
-    ##      ..removing 16 genes from module 2 because their KME is too low.
-    ##  ..Working on block 23 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 23 into file JCNA_blockwiseTOM-block.23.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
-    ##      ..removing 3 genes from module 1 because their KME is too low.
-    ##      ..removing 7 genes from module 2 because their KME is too low.
-    ##  ..Working on block 24 .
-    ##     TOM calculation: adjacency..
-    ##     ..will use 2 parallel threads.
-    ##      Fraction of slow calculations: 0.000000
-    ##     ..connectivity..
-    ##     ..matrix multiplication (system BLAS)..
-    ##     ..normalization..
-    ##     ..done.
-    ##    ..saving TOM for block 24 into file JCNA_blockwiseTOM-block.24.RData
-    ##  ....clustering..
-    ##  ....detecting modules..
-    ##  ....calculating module eigengenes..
-    ##  ....checking kME in modules..
+    ##  ...      
     ##      ..removing 123 genes from module 1 because their KME is too low.
     ##      ..removing 104 genes from module 2 because their KME is too low.
     ##  ..merging modules that are too close..
@@ -1683,7 +1058,7 @@ J1pass$module.den[[3]]
 J1pass$module.den[[4]]
 ```
 
-<img src="/Users/paez/Downloads/tutorial_moduleden1.png" width="571" /><img src="/Users/paez/Downloads/tutorial_moduleden2.png" width="571" /><img src="/Users/paez/Downloads/tutorial_moduleden3.png" width="571" /><img src="/Users/paez/Downloads/tutorial_moduleden4.png" width="571" />
+<img src="ReadFig/tutorial_moduleden1.png" width="571" /><img src="ReadFig/tutorial_moduleden2.png" width="571" /><img src="ReadFig/tutorial_moduleden3.png" width="571" /><img src="ReadFig/tutorial_moduleden4.png" width="571" />
 
 ``` r
 # Assignment of junctions to respective module:
@@ -2052,7 +1427,9 @@ jMT <- JCNAModTrait(J1pass, trait ="DDX1",module = "4", cor.method = "bicor")
 jMT$MMplot
 ```
 
-<img src="/Users/paez/Downloads/tutorial_MMvsJCplot.png" width="855" />
+<img src="
+    
+    /tutorial_MMvsJCplot.png" width="855" />
 
 ***jMT$MMplot*** shows an interactive scatterplot of Junction
 Significance (JS) for DDX1 expression vs. Module Membership (MM) in the
@@ -2269,14 +1646,14 @@ summary(J2pass)
 J2pass$module.den
 ```
 
-<img src="/Users/paez/Downloads/2passdendro.png" width="571" />
+<img src="ReadFig/2passdendro.png" width="571" />
 
 ``` r
 # Examples of junction modules significantly associated to DDX1 splicing factor expression:
 J2pass$MMvsJunctSig$purple
 ```
 
-<img src="/Users/paez/Downloads/purplemod.png" width="855" />
+<img src="ReadFig/purplemod.png" width="855" />
 
 ``` r
 # Junctions in purple module (first 10 shown):
@@ -2336,7 +1713,7 @@ J2pass$Cytoscape.input$purple$nodeData[c(1:10),]
 # Network visualization using Cytoscape:
 ```
 
-<img src="/Users/paez/Downloads/cytoscapeex.png" width="1897" />
+<img src="ReadFig/cytoscapeex.png" width="1897" />
 
 ***Note***: On Cytoscape 3.8.0, you can import table network using
 **File** -&gt; **Import** -&gt; **Network from File** and selecting the
