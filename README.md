@@ -92,6 +92,20 @@ DJExpress uses two types of files as the primary input for DJE analysis:
 2.  The correspondent transcriptome annotation (gtf file) used for
     junction quantification.
 
+Our recommended STAR alignment settings are the following:
+
+**STAR –genomeDir GENOME –readFilesIn READ1 READ2 –runThreadN 4
+–outFilterMultimapScoreRange 1 –outFilterMultimapNmax 20
+–outFilterMismatchNmax 10 –alignIntronMax 500000 –alignMatesGapMax
+1000000 –sjdbScore 2 –alignSJDBoverhangMin 1 –genomeLoad NoSharedMemory
+–limitBAMsortRAM 70000000000 –readFilesCommand cat
+–outFilterMatchNminOverLread 0.33 –outFilterScoreMinOverLread 0.33
+–sjdbOverhang 100 –outSAMstrandField intronMotif –outSAMattributes NH HI
+NM MD AS XS –sjdbGTFfile GENCODE\_ANNOTATION –limitSjdbInsertNsj 2000000
+–outSAMunmapped None –outSAMtype BAM SortedByCoordinate –outSAMheaderHD
+@HD VN:1.4 –outSAMattrRGline ID::<ID> –twopassMode Basic –outSAMmultNmax
+1**
+
 ## 3.1 Import junction quantification files with DJEimport()
 
 The first step in the DJE analysis is to merge “SJ.out.tab” files into a
@@ -136,8 +150,9 @@ head(junctions)
 Now, let’s generate the junction quantification matrix and the
 respective junction coordinates matrix. We are going to determine that 3
 reads per junction is the minimal number of reads for a junction to be
-considered expressed in the sample (this is the default value for
-**min.expressed** in DJEimport():
+considered expressed in the sample, which means that every read count
+below 3 will be transformed to 0 (this is the default value for
+**min.expressed** in **DJEimport()**):
 
 ``` r
 out.file <- DJEimport(workDir = in.file, aligner="STAR", min.expressed = 3)
@@ -521,7 +536,7 @@ iPlot.out <- DJEplotSplice(DJEanlz, geneID="ENAH", logFC = 0.5, FDR = 0.05)
 iPlot.out$plot
 ```
 
-<img src="ReadFig/tutorial_plotSplice.png" width="787" />
+<img src="/Users/paez/Downloads/tutorial_plotSplice.png" width="787" />
 
 Up- and down-regulted Junctions (with both relative and absolute logFC
 values above the specified threshold) are shown in red and blue,
@@ -535,7 +550,21 @@ When the path to a gtf file is provided, iPlot.out object contains an
 additional gene model plot with exon-to-protein domain annotation and
 the localization of a user-selected junction (e.g. the exon skipping
 junction downregulated in ENAH):
-<img src="ReadFig/DJEplotSplice_ENAH.png" width="1192" />
+
+``` r
+# Indicate path to gtf file:
+gtf0 <- "~/Downloads/gencode.v32lift37.annotation.gtf" # gtf downloaded from GENCODE website
+
+# generate gene-wise splice plot:
+plot <-DJEplotSplice(DJEanlz, geneID="ENAH",logFC = 0.5, FDR = 0.05,
+                     gtf = gtf0,
+                     target.junction = "chr1:225688773:225695652:2")
+
+# Show gene model plot:
+plot$JunctionToGene
+```
+
+<img src="/Users/paez/Downloads/DJEplotSplice_ENAH.png" width="1192" />
 
 Colors within exonic regions in the gene model plot indicate the
 presence of protein domains and/or post-translational modifications
@@ -738,7 +767,7 @@ Sr.out <- DJEspliceRadar(DT.out, ordered.junction = "chr1:225688773:225692692:2"
 Sr.out
 ```
 
-<img src="ReadFig/tutorial_spliceradar.png" width="1123" />
+<img src="/Users/paez/Downloads/tutorial_spliceradar.png" width="1123" />
 
 In the SpliceRadar plot, the coefficient of top-ranked correlations
 between the three ENAH junctions is used to map each junction-trait
@@ -819,10 +848,31 @@ soft-thresholding power plot. This representation is helpful for the
 selection of a proper soft-thresholding power that will be used later
 during JCNA 1-pass step.
 
-``` r
-# Load DJEanalize output:
-data(DJEanlz)
+For this example, we are going to use a full version of the
+**DJEanalize()** output we used before. This object has to be loaded
+from GitLab:
 
+``` r
+# Load DJEanalize output for JCNA:
+githubURL <- "https://gitlab.com/MauerLab/djexpress-djeanalize-output-file/raw/main/DJEanlz.total.RData"
+load(url(githubURL))
+DJEanlz <- analize.coadread
+
+# Summary of DJEanlz:
+summary(DJEanlz)
+```
+
+    ##              Length Class        Mode
+    ## v.norm        4     EList        list
+    ## ex.norm      17     MArrayLM     list
+    ## dje.out      26     data.frame   list
+    ## dje.sig      26     data.frame   list
+    ## logFC.plot    3     recordedplot list
+    ## volcano.plot  9     gg           list
+    ## model.fit     4     data.frame   list
+    ## group.par    14     -none-       list
+
+``` r
 # Load splicing factor expression as trait data:
 SF <- system.file("extdata", "SF.expr.rds", package = "DJExpress")
 SF.exp <- readRDS(SF)
@@ -834,34 +884,327 @@ seq(1,length(colnames(DJEanlz$v.norm)[grep("TCGA", colnames(DJEanlz$v.norm))]), 
 # Set Group1 (normal tissue) to exclude from the analysis
 Group1 <- colnames(DJEanlz$v.norm$E)[grep("SRR", colnames(DJEanlz$v.norm$E))]
 
-# Run JCNAprepare:
+# Run JCNAprepare (it takes some minutes):
 Jprep <- JCNAprepare(analize.out=DJEanlz, Group1 = Group1,
-traitData = SF.exp, abline.threshold=60, input.type = "DJEanalize.out")
+traitData = SF.exp, abline.threshold=600, input.type = "DJEanalize.out")
 ```
 
     ## Allowing parallel execution with up to 2 working processes.
     ##  Flagging junctions and samples with too many missing values...
     ##   ..step 1
 
-    ## pickSoftThreshold: will use block size 1072.
+    ## pickSoftThreshold: will use block size 390.
     ##  pickSoftThreshold: calculating connectivity for given powers...
-    ##    ..working on genes 1 through 1072 of 1072
-    ##    Power SFT.R.sq  slope truncated.R.sq mean.k. median.k. max.k.
-    ## 1      1    0.114  1.150          0.920 237.000   230.000 366.00
-    ## 2      2    0.142 -0.659          0.885  82.800    77.200 186.00
-    ## 3      3    0.617 -1.340          0.960  37.100    32.800 113.00
-    ## 4      4    0.741 -1.540          0.965  19.600    16.500  75.30
-    ## 5      5    0.795 -1.740          0.970  11.700     9.160  53.50
-    ## 6      6    0.825 -1.790          0.986   7.730     5.860  39.70
-    ## 7      7    0.838 -1.790          0.988   5.480     3.880  30.40
-    ## 8      8    0.843 -1.720          0.973   4.120     2.780  23.80
-    ## 9      9    0.855 -1.580          0.972   3.240     2.000  19.10
-    ## 10    10    0.891 -1.400          0.933   2.640     1.550  15.50
-    ## 11    12    0.934 -1.400          0.959   1.890     0.901  13.40
-    ## 12    14    0.949 -1.410          0.954   1.450     0.563  12.30
-    ## 13    16    0.942 -1.410          0.937   1.160     0.378  11.30
-    ## 14    18    0.932 -1.410          0.926   0.965     0.244  10.50
-    ## 15    20    0.922 -1.390          0.905   0.819     0.170   9.69
+    ##    ..working on genes 1 through 390 of 114639
+    ##    ..working on genes 391 through 780 of 114639
+    ##    ..working on genes 781 through 1170 of 114639
+    ##    ..working on genes 1171 through 1560 of 114639
+    ##    ..working on genes 1561 through 1950 of 114639
+    ##    ..working on genes 1951 through 2340 of 114639
+    ##    ..working on genes 2341 through 2730 of 114639
+    ##    ..working on genes 2731 through 3120 of 114639
+    ##    ..working on genes 3121 through 3510 of 114639
+    ##    ..working on genes 3511 through 3900 of 114639
+    ##    ..working on genes 3901 through 4290 of 114639
+    ##    ..working on genes 4291 through 4680 of 114639
+    ##    ..working on genes 4681 through 5070 of 114639
+    ##    ..working on genes 5071 through 5460 of 114639
+    ##    ..working on genes 5461 through 5850 of 114639
+    ##    ..working on genes 5851 through 6240 of 114639
+    ##    ..working on genes 6241 through 6630 of 114639
+    ##    ..working on genes 6631 through 7020 of 114639
+    ##    ..working on genes 7021 through 7410 of 114639
+    ##    ..working on genes 7411 through 7800 of 114639
+    ##    ..working on genes 7801 through 8190 of 114639
+    ##    ..working on genes 8191 through 8580 of 114639
+    ##    ..working on genes 8581 through 8970 of 114639
+    ##    ..working on genes 8971 through 9360 of 114639
+    ##    ..working on genes 9361 through 9750 of 114639
+    ##    ..working on genes 9751 through 10140 of 114639
+    ##    ..working on genes 10141 through 10530 of 114639
+    ##    ..working on genes 10531 through 10920 of 114639
+    ##    ..working on genes 10921 through 11310 of 114639
+    ##    ..working on genes 11311 through 11700 of 114639
+    ##    ..working on genes 11701 through 12090 of 114639
+    ##    ..working on genes 12091 through 12480 of 114639
+    ##    ..working on genes 12481 through 12870 of 114639
+    ##    ..working on genes 12871 through 13260 of 114639
+    ##    ..working on genes 13261 through 13650 of 114639
+    ##    ..working on genes 13651 through 14040 of 114639
+    ##    ..working on genes 14041 through 14430 of 114639
+    ##    ..working on genes 14431 through 14820 of 114639
+    ##    ..working on genes 14821 through 15210 of 114639
+    ##    ..working on genes 15211 through 15600 of 114639
+    ##    ..working on genes 15601 through 15990 of 114639
+    ##    ..working on genes 15991 through 16380 of 114639
+    ##    ..working on genes 16381 through 16770 of 114639
+    ##    ..working on genes 16771 through 17160 of 114639
+    ##    ..working on genes 17161 through 17550 of 114639
+    ##    ..working on genes 17551 through 17940 of 114639
+    ##    ..working on genes 17941 through 18330 of 114639
+    ##    ..working on genes 18331 through 18720 of 114639
+    ##    ..working on genes 18721 through 19110 of 114639
+    ##    ..working on genes 19111 through 19500 of 114639
+    ##    ..working on genes 19501 through 19890 of 114639
+    ##    ..working on genes 19891 through 20280 of 114639
+    ##    ..working on genes 20281 through 20670 of 114639
+    ##    ..working on genes 20671 through 21060 of 114639
+    ##    ..working on genes 21061 through 21450 of 114639
+    ##    ..working on genes 21451 through 21840 of 114639
+    ##    ..working on genes 21841 through 22230 of 114639
+    ##    ..working on genes 22231 through 22620 of 114639
+    ##    ..working on genes 22621 through 23010 of 114639
+    ##    ..working on genes 23011 through 23400 of 114639
+    ##    ..working on genes 23401 through 23790 of 114639
+    ##    ..working on genes 23791 through 24180 of 114639
+    ##    ..working on genes 24181 through 24570 of 114639
+    ##    ..working on genes 24571 through 24960 of 114639
+    ##    ..working on genes 24961 through 25350 of 114639
+    ##    ..working on genes 25351 through 25740 of 114639
+    ##    ..working on genes 25741 through 26130 of 114639
+    ##    ..working on genes 26131 through 26520 of 114639
+    ##    ..working on genes 26521 through 26910 of 114639
+    ##    ..working on genes 26911 through 27300 of 114639
+    ##    ..working on genes 27301 through 27690 of 114639
+    ##    ..working on genes 27691 through 28080 of 114639
+    ##    ..working on genes 28081 through 28470 of 114639
+    ##    ..working on genes 28471 through 28860 of 114639
+    ##    ..working on genes 28861 through 29250 of 114639
+    ##    ..working on genes 29251 through 29640 of 114639
+    ##    ..working on genes 29641 through 30030 of 114639
+    ##    ..working on genes 30031 through 30420 of 114639
+    ##    ..working on genes 30421 through 30810 of 114639
+    ##    ..working on genes 30811 through 31200 of 114639
+    ##    ..working on genes 31201 through 31590 of 114639
+    ##    ..working on genes 31591 through 31980 of 114639
+    ##    ..working on genes 31981 through 32370 of 114639
+    ##    ..working on genes 32371 through 32760 of 114639
+    ##    ..working on genes 32761 through 33150 of 114639
+    ##    ..working on genes 33151 through 33540 of 114639
+    ##    ..working on genes 33541 through 33930 of 114639
+    ##    ..working on genes 33931 through 34320 of 114639
+    ##    ..working on genes 34321 through 34710 of 114639
+    ##    ..working on genes 34711 through 35100 of 114639
+    ##    ..working on genes 35101 through 35490 of 114639
+    ##    ..working on genes 35491 through 35880 of 114639
+    ##    ..working on genes 35881 through 36270 of 114639
+    ##    ..working on genes 36271 through 36660 of 114639
+    ##    ..working on genes 36661 through 37050 of 114639
+    ##    ..working on genes 37051 through 37440 of 114639
+    ##    ..working on genes 37441 through 37830 of 114639
+    ##    ..working on genes 37831 through 38220 of 114639
+    ##    ..working on genes 38221 through 38610 of 114639
+    ##    ..working on genes 38611 through 39000 of 114639
+    ##    ..working on genes 39001 through 39390 of 114639
+    ##    ..working on genes 39391 through 39780 of 114639
+    ##    ..working on genes 39781 through 40170 of 114639
+    ##    ..working on genes 40171 through 40560 of 114639
+    ##    ..working on genes 40561 through 40950 of 114639
+    ##    ..working on genes 40951 through 41340 of 114639
+    ##    ..working on genes 41341 through 41730 of 114639
+    ##    ..working on genes 41731 through 42120 of 114639
+    ##    ..working on genes 42121 through 42510 of 114639
+    ##    ..working on genes 42511 through 42900 of 114639
+    ##    ..working on genes 42901 through 43290 of 114639
+    ##    ..working on genes 43291 through 43680 of 114639
+    ##    ..working on genes 43681 through 44070 of 114639
+    ##    ..working on genes 44071 through 44460 of 114639
+    ##    ..working on genes 44461 through 44850 of 114639
+    ##    ..working on genes 44851 through 45240 of 114639
+    ##    ..working on genes 45241 through 45630 of 114639
+    ##    ..working on genes 45631 through 46020 of 114639
+    ##    ..working on genes 46021 through 46410 of 114639
+    ##    ..working on genes 46411 through 46800 of 114639
+    ##    ..working on genes 46801 through 47190 of 114639
+    ##    ..working on genes 47191 through 47580 of 114639
+    ##    ..working on genes 47581 through 47970 of 114639
+    ##    ..working on genes 47971 through 48360 of 114639
+    ##    ..working on genes 48361 through 48750 of 114639
+    ##    ..working on genes 48751 through 49140 of 114639
+    ##    ..working on genes 49141 through 49530 of 114639
+    ##    ..working on genes 49531 through 49920 of 114639
+    ##    ..working on genes 49921 through 50310 of 114639
+    ##    ..working on genes 50311 through 50700 of 114639
+    ##    ..working on genes 50701 through 51090 of 114639
+    ##    ..working on genes 51091 through 51480 of 114639
+    ##    ..working on genes 51481 through 51870 of 114639
+    ##    ..working on genes 51871 through 52260 of 114639
+    ##    ..working on genes 52261 through 52650 of 114639
+    ##    ..working on genes 52651 through 53040 of 114639
+    ##    ..working on genes 53041 through 53430 of 114639
+    ##    ..working on genes 53431 through 53820 of 114639
+    ##    ..working on genes 53821 through 54210 of 114639
+    ##    ..working on genes 54211 through 54600 of 114639
+    ##    ..working on genes 54601 through 54990 of 114639
+    ##    ..working on genes 54991 through 55380 of 114639
+    ##    ..working on genes 55381 through 55770 of 114639
+    ##    ..working on genes 55771 through 56160 of 114639
+    ##    ..working on genes 56161 through 56550 of 114639
+    ##    ..working on genes 56551 through 56940 of 114639
+    ##    ..working on genes 56941 through 57330 of 114639
+    ##    ..working on genes 57331 through 57720 of 114639
+    ##    ..working on genes 57721 through 58110 of 114639
+    ##    ..working on genes 58111 through 58500 of 114639
+    ##    ..working on genes 58501 through 58890 of 114639
+    ##    ..working on genes 58891 through 59280 of 114639
+    ##    ..working on genes 59281 through 59670 of 114639
+    ##    ..working on genes 59671 through 60060 of 114639
+    ##    ..working on genes 60061 through 60450 of 114639
+    ##    ..working on genes 60451 through 60840 of 114639
+    ##    ..working on genes 60841 through 61230 of 114639
+    ##    ..working on genes 61231 through 61620 of 114639
+    ##    ..working on genes 61621 through 62010 of 114639
+    ##    ..working on genes 62011 through 62400 of 114639
+    ##    ..working on genes 62401 through 62790 of 114639
+    ##    ..working on genes 62791 through 63180 of 114639
+    ##    ..working on genes 63181 through 63570 of 114639
+    ##    ..working on genes 63571 through 63960 of 114639
+    ##    ..working on genes 63961 through 64350 of 114639
+    ##    ..working on genes 64351 through 64740 of 114639
+    ##    ..working on genes 64741 through 65130 of 114639
+    ##    ..working on genes 65131 through 65520 of 114639
+    ##    ..working on genes 65521 through 65910 of 114639
+    ##    ..working on genes 65911 through 66300 of 114639
+    ##    ..working on genes 66301 through 66690 of 114639
+    ##    ..working on genes 66691 through 67080 of 114639
+    ##    ..working on genes 67081 through 67470 of 114639
+    ##    ..working on genes 67471 through 67860 of 114639
+    ##    ..working on genes 67861 through 68250 of 114639
+    ##    ..working on genes 68251 through 68640 of 114639
+    ##    ..working on genes 68641 through 69030 of 114639
+    ##    ..working on genes 69031 through 69420 of 114639
+    ##    ..working on genes 69421 through 69810 of 114639
+    ##    ..working on genes 69811 through 70200 of 114639
+    ##    ..working on genes 70201 through 70590 of 114639
+    ##    ..working on genes 70591 through 70980 of 114639
+    ##    ..working on genes 70981 through 71370 of 114639
+    ##    ..working on genes 71371 through 71760 of 114639
+    ##    ..working on genes 71761 through 72150 of 114639
+    ##    ..working on genes 72151 through 72540 of 114639
+    ##    ..working on genes 72541 through 72930 of 114639
+    ##    ..working on genes 72931 through 73320 of 114639
+    ##    ..working on genes 73321 through 73710 of 114639
+    ##    ..working on genes 73711 through 74100 of 114639
+    ##    ..working on genes 74101 through 74490 of 114639
+    ##    ..working on genes 74491 through 74880 of 114639
+    ##    ..working on genes 74881 through 75270 of 114639
+    ##    ..working on genes 75271 through 75660 of 114639
+    ##    ..working on genes 75661 through 76050 of 114639
+    ##    ..working on genes 76051 through 76440 of 114639
+    ##    ..working on genes 76441 through 76830 of 114639
+    ##    ..working on genes 76831 through 77220 of 114639
+    ##    ..working on genes 77221 through 77610 of 114639
+    ##    ..working on genes 77611 through 78000 of 114639
+    ##    ..working on genes 78001 through 78390 of 114639
+    ##    ..working on genes 78391 through 78780 of 114639
+    ##    ..working on genes 78781 through 79170 of 114639
+    ##    ..working on genes 79171 through 79560 of 114639
+    ##    ..working on genes 79561 through 79950 of 114639
+    ##    ..working on genes 79951 through 80340 of 114639
+    ##    ..working on genes 80341 through 80730 of 114639
+    ##    ..working on genes 80731 through 81120 of 114639
+    ##    ..working on genes 81121 through 81510 of 114639
+    ##    ..working on genes 81511 through 81900 of 114639
+    ##    ..working on genes 81901 through 82290 of 114639
+    ##    ..working on genes 82291 through 82680 of 114639
+    ##    ..working on genes 82681 through 83070 of 114639
+    ##    ..working on genes 83071 through 83460 of 114639
+    ##    ..working on genes 83461 through 83850 of 114639
+    ##    ..working on genes 83851 through 84240 of 114639
+    ##    ..working on genes 84241 through 84630 of 114639
+    ##    ..working on genes 84631 through 85020 of 114639
+    ##    ..working on genes 85021 through 85410 of 114639
+    ##    ..working on genes 85411 through 85800 of 114639
+    ##    ..working on genes 85801 through 86190 of 114639
+    ##    ..working on genes 86191 through 86580 of 114639
+    ##    ..working on genes 86581 through 86970 of 114639
+    ##    ..working on genes 86971 through 87360 of 114639
+    ##    ..working on genes 87361 through 87750 of 114639
+    ##    ..working on genes 87751 through 88140 of 114639
+    ##    ..working on genes 88141 through 88530 of 114639
+    ##    ..working on genes 88531 through 88920 of 114639
+    ##    ..working on genes 88921 through 89310 of 114639
+    ##    ..working on genes 89311 through 89700 of 114639
+    ##    ..working on genes 89701 through 90090 of 114639
+    ##    ..working on genes 90091 through 90480 of 114639
+    ##    ..working on genes 90481 through 90870 of 114639
+    ##    ..working on genes 90871 through 91260 of 114639
+    ##    ..working on genes 91261 through 91650 of 114639
+    ##    ..working on genes 91651 through 92040 of 114639
+    ##    ..working on genes 92041 through 92430 of 114639
+    ##    ..working on genes 92431 through 92820 of 114639
+    ##    ..working on genes 92821 through 93210 of 114639
+    ##    ..working on genes 93211 through 93600 of 114639
+    ##    ..working on genes 93601 through 93990 of 114639
+    ##    ..working on genes 93991 through 94380 of 114639
+    ##    ..working on genes 94381 through 94770 of 114639
+    ##    ..working on genes 94771 through 95160 of 114639
+    ##    ..working on genes 95161 through 95550 of 114639
+    ##    ..working on genes 95551 through 95940 of 114639
+    ##    ..working on genes 95941 through 96330 of 114639
+    ##    ..working on genes 96331 through 96720 of 114639
+    ##    ..working on genes 96721 through 97110 of 114639
+    ##    ..working on genes 97111 through 97500 of 114639
+    ##    ..working on genes 97501 through 97890 of 114639
+    ##    ..working on genes 97891 through 98280 of 114639
+    ##    ..working on genes 98281 through 98670 of 114639
+    ##    ..working on genes 98671 through 99060 of 114639
+    ##    ..working on genes 99061 through 99450 of 114639
+    ##    ..working on genes 99451 through 99840 of 114639
+    ##    ..working on genes 99841 through 100230 of 114639
+    ##    ..working on genes 100231 through 100620 of 114639
+    ##    ..working on genes 100621 through 101010 of 114639
+    ##    ..working on genes 101011 through 101400 of 114639
+    ##    ..working on genes 101401 through 101790 of 114639
+    ##    ..working on genes 101791 through 102180 of 114639
+    ##    ..working on genes 102181 through 102570 of 114639
+    ##    ..working on genes 102571 through 102960 of 114639
+    ##    ..working on genes 102961 through 103350 of 114639
+    ##    ..working on genes 103351 through 103740 of 114639
+    ##    ..working on genes 103741 through 104130 of 114639
+    ##    ..working on genes 104131 through 104520 of 114639
+    ##    ..working on genes 104521 through 104910 of 114639
+    ##    ..working on genes 104911 through 105300 of 114639
+    ##    ..working on genes 105301 through 105690 of 114639
+    ##    ..working on genes 105691 through 106080 of 114639
+    ##    ..working on genes 106081 through 106470 of 114639
+    ##    ..working on genes 106471 through 106860 of 114639
+    ##    ..working on genes 106861 through 107250 of 114639
+    ##    ..working on genes 107251 through 107640 of 114639
+    ##    ..working on genes 107641 through 108030 of 114639
+    ##    ..working on genes 108031 through 108420 of 114639
+    ##    ..working on genes 108421 through 108810 of 114639
+    ##    ..working on genes 108811 through 109200 of 114639
+    ##    ..working on genes 109201 through 109590 of 114639
+    ##    ..working on genes 109591 through 109980 of 114639
+    ##    ..working on genes 109981 through 110370 of 114639
+    ##    ..working on genes 110371 through 110760 of 114639
+    ##    ..working on genes 110761 through 111150 of 114639
+    ##    ..working on genes 111151 through 111540 of 114639
+    ##    ..working on genes 111541 through 111930 of 114639
+    ##    ..working on genes 111931 through 112320 of 114639
+    ##    ..working on genes 112321 through 112710 of 114639
+    ##    ..working on genes 112711 through 113100 of 114639
+    ##    ..working on genes 113101 through 113490 of 114639
+    ##    ..working on genes 113491 through 113880 of 114639
+    ##    ..working on genes 113881 through 114270 of 114639
+    ##    ..working on genes 114271 through 114639 of 114639
+    ##    Power SFT.R.sq   slope truncated.R.sq  mean.k. median.k. max.k.
+    ## 1      1 0.000349  0.0636          0.883 25400.00  24400.00  41600
+    ## 2      2 0.359000 -1.2500          0.900  8670.00   7730.00  21200
+    ## 3      3 0.687000 -1.7300          0.937  3680.00   2970.00  12700
+    ## 4      4 0.790000 -1.9200          0.948  1790.00   1290.00   8270
+    ## 5      5 0.819000 -2.0100          0.949   964.00    612.00   5750
+    ## 6      6 0.836000 -2.0300          0.957   558.00    313.00   4170
+    ## 7      7 0.846000 -2.0300          0.963   343.00    168.00   3120
+    ## 8      8 0.843000 -2.0400          0.965   220.00     94.70   2400
+    ## 9      9 0.835000 -2.0600          0.965   147.00     55.70   1880
+    ## 10    10 0.839000 -2.0500          0.971   102.00     34.10   1500
+    ## 11    12 0.840000 -2.0400          0.977    52.80     14.20    990
+    ## 12    14 0.828000 -2.0400          0.976    29.90      6.83    680
+    ## 13    16 0.820000 -2.0100          0.963    18.20      3.66    482
+    ## 14    18 0.798000 -1.9200          0.906    11.80      2.13    350
+    ## 15    20 0.944000 -1.6000          0.936     8.09      1.32    259
 
 ``` r
 # Summary of JCNAprepare output:
@@ -869,21 +1212,21 @@ summary(Jprep)
 ```
 
     ##            Length Class        Mode
-    ## sample.den    3   recordedplot list
-    ## datExpr    1072   data.frame   list
-    ## datTraits   360   data.frame   list
-    ## NetTop        3   recordedplot list
-    ## sft           2   -none-       list
+    ## sample.den      3 recordedplot list
+    ## datExpr    114639 data.frame   list
+    ## datTraits     360 data.frame   list
+    ## NetTop          3 recordedplot list
+    ## sft             2 -none-       list
 
 We had defined an abline.threshold of 60, to allow the removal of the
 outlier sample observed in the sample dendrogram:
 
-<img src="ReadFig/tutorial_sampleclust.png" width="1064" />
+<img src="/Users/paez/Downloads/tutorial_sampleclust.png" width="571" />
 
 **Jprep$NetTop** shows the 2 plots generated during the analysis of
 network topology. The lowest power for which the scale-free topology fit
 index curve flattens out upon reaching a high value (here around 0.90)
-is 10. This is the power selected for the first round of network
+is 18. This is the power selected for the first round of network
 construction (**JCNA1pass()** function).
 
 ``` r
@@ -891,7 +1234,7 @@ construction (**JCNA1pass()** function).
 Jprep$NetTop
 ```
 
-<img src="ReadFig/tutorial_nettop.png" width="1064" />
+<img src="/Users/paez/Downloads/tutorial_nettop.png" width="571" />
 
 ## 4.2 1-pass JCNA
 
@@ -911,19 +1254,402 @@ kept default parameter values also suggested by WGCNA guidelines to work
 well in a variety of settings.
 
 ``` r
-# Run JCNA1pass:
+# Run JCNA1pass (this will take some minutes. You can try more threads specified in nThreads, in case they are available in your system):
 J1pass <- JCNA1pass(Jprep, cor.method = "bicor", nThreads = 2)
 ```
 
     ## [1] "Constructing the junction network and modules"
     ## Allowing parallel execution with up to 2 working processes.
-    ## [1] " modules identified:11"
+    ##  Calculating module eigengenes block-wise from all genes
+    ##    Flagging genes and samples with too many missing values...
+    ##     ..step 1
+    ##  ....pre-clustering genes to determine blocks..
+    ##    Projective K-means:
+    ##    ..k-means clustering..
+    ##    ..merging smaller clusters...
+    ## Block sizes:
+    ## gBlocks
+    ##    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16 
+    ## 4999 4999 4998 4997 4993 4991 4990 4988 4985 4969 4967 4964 4960 4942 4903 4896 
+    ##   17   18   19   20   21   22   23   24 
+    ## 4862 4851 4838 4710 4663 4167 4043 2964 
+    ##  ..Working on block 1 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 1 into file JCNA_blockwiseTOM-block.1.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 6 genes from module 2 because their KME is too low.
+    ##  ..Working on block 2 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 2 into file JCNA_blockwiseTOM-block.2.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 20 genes from module 1 because their KME is too low.
+    ##      ..removing 4 genes from module 2 because their KME is too low.
+    ##      ..removing 1 genes from module 3 because their KME is too low.
+    ##  ..Working on block 3 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 3 into file JCNA_blockwiseTOM-block.3.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 8 genes from module 1 because their KME is too low.
+    ##      ..removing 77 genes from module 3 because their KME is too low.
+    ##  ..Working on block 4 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 4 into file JCNA_blockwiseTOM-block.4.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 65 genes from module 1 because their KME is too low.
+    ##      ..removing 69 genes from module 2 because their KME is too low.
+    ##      ..removing 18 genes from module 3 because their KME is too low.
+    ##      ..removing 214 genes from module 4 because their KME is too low.
+    ##      ..removing 4 genes from module 5 because their KME is too low.
+    ##      ..removing 1 genes from module 6 because their KME is too low.
+    ##      ..removing 3 genes from module 7 because their KME is too low.
+    ##  ..Working on block 5 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 5 into file JCNA_blockwiseTOM-block.5.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 61 genes from module 1 because their KME is too low.
+    ##      ..removing 3 genes from module 2 because their KME is too low.
+    ##      ..removing 36 genes from module 3 because their KME is too low.
+    ##      ..removing 7 genes from module 4 because their KME is too low.
+    ##  ..Working on block 6 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 6 into file JCNA_blockwiseTOM-block.6.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 5 genes from module 1 because their KME is too low.
+    ##      ..removing 3 genes from module 2 because their KME is too low.
+    ##      ..removing 11 genes from module 3 because their KME is too low.
+    ##      ..removing 10 genes from module 4 because their KME is too low.
+    ##      ..removing 1 genes from module 5 because their KME is too low.
+    ##  ..Working on block 7 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 7 into file JCNA_blockwiseTOM-block.7.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 8 genes from module 1 because their KME is too low.
+    ##      ..removing 4 genes from module 2 because their KME is too low.
+    ##      ..removing 1 genes from module 3 because their KME is too low.
+    ##  ..Working on block 8 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 8 into file JCNA_blockwiseTOM-block.8.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 22 genes from module 1 because their KME is too low.
+    ##      ..removing 6 genes from module 2 because their KME is too low.
+    ##      ..removing 7 genes from module 3 because their KME is too low.
+    ##  ..Working on block 9 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 9 into file JCNA_blockwiseTOM-block.9.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 29 genes from module 1 because their KME is too low.
+    ##      ..removing 8 genes from module 2 because their KME is too low.
+    ##      ..removing 1 genes from module 3 because their KME is too low.
+    ##      ..removing 3 genes from module 4 because their KME is too low.
+    ##      ..removing 2 genes from module 5 because their KME is too low.
+    ##  ..Working on block 10 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 10 into file JCNA_blockwiseTOM-block.10.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 20 genes from module 1 because their KME is too low.
+    ##      ..removing 6 genes from module 2 because their KME is too low.
+    ##  ..Working on block 11 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 11 into file JCNA_blockwiseTOM-block.11.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 60 genes from module 1 because their KME is too low.
+    ##  ..Working on block 12 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 12 into file JCNA_blockwiseTOM-block.12.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 80 genes from module 1 because their KME is too low.
+    ##      ..removing 29 genes from module 2 because their KME is too low.
+    ##      ..removing 3 genes from module 4 because their KME is too low.
+    ##      ..removing 1 genes from module 5 because their KME is too low.
+    ##  ..Working on block 13 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 13 into file JCNA_blockwiseTOM-block.13.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 36 genes from module 1 because their KME is too low.
+    ##      ..removing 14 genes from module 2 because their KME is too low.
+    ##      ..removing 6 genes from module 3 because their KME is too low.
+    ##  ..Working on block 14 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 14 into file JCNA_blockwiseTOM-block.14.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 3 genes from module 1 because their KME is too low.
+    ##  ..Working on block 15 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 15 into file JCNA_blockwiseTOM-block.15.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  No modules detected in block 15
+    ##  ..Working on block 16 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 16 into file JCNA_blockwiseTOM-block.16.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 43 genes from module 1 because their KME is too low.
+    ##  ..Working on block 17 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 17 into file JCNA_blockwiseTOM-block.17.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  No modules detected in block 17
+    ##  ..Working on block 18 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 18 into file JCNA_blockwiseTOM-block.18.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  No modules detected in block 18
+    ##  ..Working on block 19 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 19 into file JCNA_blockwiseTOM-block.19.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 26 genes from module 1 because their KME is too low.
+    ##      ..removing 18 genes from module 2 because their KME is too low.
+    ##      ..removing 4 genes from module 3 because their KME is too low.
+    ##  ..Working on block 20 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 20 into file JCNA_blockwiseTOM-block.20.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 11 genes from module 1 because their KME is too low.
+    ##  ..Working on block 21 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 21 into file JCNA_blockwiseTOM-block.21.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 176 genes from module 1 because their KME is too low.
+    ##  ..Working on block 22 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 22 into file JCNA_blockwiseTOM-block.22.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 81 genes from module 1 because their KME is too low.
+    ##      ..removing 16 genes from module 2 because their KME is too low.
+    ##  ..Working on block 23 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 23 into file JCNA_blockwiseTOM-block.23.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 3 genes from module 1 because their KME is too low.
+    ##      ..removing 7 genes from module 2 because their KME is too low.
+    ##  ..Working on block 24 .
+    ##     TOM calculation: adjacency..
+    ##     ..will use 2 parallel threads.
+    ##      Fraction of slow calculations: 0.000000
+    ##     ..connectivity..
+    ##     ..matrix multiplication (system BLAS)..
+    ##     ..normalization..
+    ##     ..done.
+    ##    ..saving TOM for block 24 into file JCNA_blockwiseTOM-block.24.RData
+    ##  ....clustering..
+    ##  ....detecting modules..
+    ##  ....calculating module eigengenes..
+    ##  ....checking kME in modules..
+    ##      ..removing 123 genes from module 1 because their KME is too low.
+    ##      ..removing 104 genes from module 2 because their KME is too low.
+    ##  ..merging modules that are too close..
+    ##      mergeCloseModules: Merging modules whose distance is less than 0.25
+    ##        Calculating new MEs...
+    ## [1] " modules identified:32"
     ## 
-    ##     black      blue     brown     green      grey   magenta      pink    purple 
-    ##        24        49        35        28       739        22        22        22 
-    ##       red turquoise    yellow 
-    ##        25        74        32 
-    ## [1] "Label 0 is reserved for genes outside of all modules"
+    ##     0     1     2     3     4     5     6     7     8     9    10    11    12 
+    ## 59055 24919  8625  2498  1564  1423  1356  1352  1262  1180  1174  1036   987 
+    ##    13    14    15    16    17    18    19    20    21    22    23    24    25 
+    ##   958   743   719   677   625   621   517   410   338   309   302   293   278 
+    ##    26    27    28    29    30    31 
+    ##   268   255   244   229   218   204 
+    ## [1] "Label 0 (grey color) is reserved for genes outside of all modules"
 
     ## [1] "Calculating module membership values and trait correlations"
 
@@ -936,187 +1662,194 @@ summary(J1pass)
 ```
 
     ##                      Length Class        Mode     
-    ## net                    10   -none-       list     
-    ## datExpr              1072   data.frame   list     
-    ## datTraits             360   data.frame   list     
-    ## moduleColors         1072   -none-       character
-    ## module.den              1   -none-       list     
-    ## moduleTraitCor       3960   -none-       numeric  
-    ## moduleTraitPvalue    3960   -none-       numeric  
-    ## juncModuleMembership   11   data.frame   list     
-    ## juncMMPvalue           11   data.frame   list     
-    ## ModuleTrait             3   recordedplot list     
-    ## Junctrait             720   data.frame   list     
-    ## sig.cors.trait        360   -none-       list
+    ## net                      10 -none-       list     
+    ## datExpr              114639 data.frame   list     
+    ## datTraits               360 data.frame   list     
+    ## moduleColors         114639 -none-       character
+    ## module.den               24 -none-       list     
+    ## moduleTraitCor        11520 -none-       numeric  
+    ## moduleTraitPvalue     11520 -none-       numeric  
+    ## juncModuleMembership     32 data.frame   list     
+    ## juncMMPvalue             32 data.frame   list     
+    ## ModuleTrait               3 recordedplot list     
+    ## Junctrait               720 data.frame   list     
+    ## sig.cors.trait          360 -none-       list
 
 ``` r
-# Junction module dendrogram:
-J1pass$module.den
+# Junction module dendrogram (first 4 dendrogram blocks shown):
+J1pass$module.den[[1]]
+J1pass$module.den[[2]]
+J1pass$module.den[[3]]
+J1pass$module.den[[4]]
 ```
 
-    ## [[1]]
-
-<img src="ReadFig/tutorial_moduleden.png" width="988" />
+<img src="/Users/paez/Downloads/tutorial_moduleden1.png" width="571" /><img src="/Users/paez/Downloads/tutorial_moduleden2.png" width="571" /><img src="/Users/paez/Downloads/tutorial_moduleden3.png" width="571" /><img src="/Users/paez/Downloads/tutorial_moduleden4.png" width="571" />
 
 ``` r
 # Assignment of junctions to respective module:
 J1pass$net$colors[1:10] # only first 10 displayed
 ```
 
-    ##  chr16:67863992:67864292:2  chr17:73512698:73512826:1 
-    ##                     "grey"                     "grey" 
-    ## chr3:150321287:150340171:1  chr19:54970588:54970643:1 
-    ##                     "grey"                  "magenta" 
-    ## chr7:134853813:134855150:2  chr19:54969701:54971945:1 
-    ##                     "grey"                     "grey" 
-    ##   chr8:23292195:23292904:2   chr5:78937020:78938654:1 
-    ##                     "grey"                     "grey" 
-    ##   chr6:76423542:76425100:1   chr5:78919313:78936673:1 
-    ##                  "magenta"                     "grey"
+    ##   chr1:14830:14969:2   chr1:17369:17605:2   chr1:17743:17914:2 
+    ##                 "23"                  "0"                  "0" 
+    ## chr1:569158:569317:2 chr1:763156:764382:1 chr1:878439:878632:1 
+    ##                 "18"                  "0"                  "4" 
+    ## chr1:878758:879077:1 chr1:879189:879287:1 chr1:880181:880421:2 
+    ##                  "4"                  "4"                  "0" 
+    ## chr1:880181:880436:2 
+    ##                  "0"
+
+``` r
+# correspondent module color:
+WGCNA::labels2colors(J1pass$net$colors)[1:10]
+```
+
+    ##  [1] "grey60"      "turquoise"   "turquoise"   "greenyellow" "turquoise"  
+    ##  [6] "white"       "white"       "white"       "turquoise"   "turquoise"
 
 ``` r
 # Module Eigengenes per sample:
 J1pass$net$MEs[,c(1:10)] # only first 10 modules displayed
 ```
 
-    ##            MEmagenta      MEblack       MEbrown       MEgreen     MEpurple
-    ## TCGA_1  -0.014460527 -0.008143766  0.0000325676 -0.0007359495 -0.033351845
-    ## TCGA_3   0.387909079 -0.250920535 -0.2617097788 -0.1903560530 -0.305278263
-    ## TCGA_4  -0.035026052  0.030358841 -0.0875089107 -0.4408555596 -0.016478978
-    ## TCGA_5   0.218819706 -0.252690691 -0.2272589194  0.0718845869  0.108662074
-    ## TCGA_6   0.336051839  0.041906105  0.2169509244 -0.1009103283 -0.055741022
-    ## TCGA_7   0.075782314  0.185037122  0.3144468609  0.1628482644  0.440691094
-    ## TCGA_8   0.108589767  0.051296471  0.0279525580  0.1612550303  0.091809004
-    ## TCGA_9   0.040182648  0.110316901  0.1957963552  0.0963239729  0.173917796
-    ## TCGA_10 -0.228772521 -0.034767680 -0.2233378120  0.0531908738  0.092179869
-    ## TCGA_11  0.396309051  0.157933034  0.2746524098  0.0867436667  0.075493581
-    ## TCGA_12  0.002965494  0.113131729 -0.0639020996  0.0421613464  0.028903972
-    ## TCGA_13  0.098986552  0.385964410  0.3824441177 -0.0579932015  0.111253394
-    ## TCGA_14 -0.323353385  0.086148880 -0.0463952044  0.0264251188 -0.051312945
-    ## TCGA_15 -0.039271709  0.357122277  0.0956678836 -0.0359167602 -0.004936681
-    ## TCGA_16 -0.111330475  0.079957039 -0.0731894210  0.1306507144 -0.037862755
-    ## TCGA_17  0.350856897 -0.116610898 -0.1939804239 -0.1906090069 -0.401684085
-    ## TCGA_18 -0.102310482  0.041137820 -0.0836931022 -0.1171220544 -0.141242555
-    ## TCGA_19 -0.057675926 -0.161132427 -0.0197544076  0.1439450738  0.208004002
-    ## TCGA_20 -0.024770014 -0.436233561 -0.2920080954 -0.2553363490 -0.214493000
-    ## TCGA_21 -0.072132197  0.151401578 -0.0573642996 -0.3065987950 -0.083506061
-    ## TCGA_22 -0.049296558  0.138550737  0.1637503652 -0.0815226104  0.128091390
-    ## TCGA_23 -0.010162993  0.034617750  0.0770712443  0.2790473434  0.022084677
-    ## TCGA_24 -0.330082767  0.194748448  0.2392544588  0.0786679007  0.062727660
-    ## TCGA_25 -0.050931449 -0.277157582 -0.3255681683 -0.3524365381 -0.425189697
-    ## TCGA_26 -0.100136340 -0.260409032 -0.1709082299  0.2720931427  0.130586025
-    ## TCGA_27 -0.193148346 -0.099666642  0.1148041432  0.3030723194  0.303636438
-    ## TCGA_28 -0.061401002 -0.122606291  0.1002143402  0.2139206803  0.054812243
-    ## TCGA_29 -0.102926898 -0.065251398  0.0320896608  0.0279690016 -0.145794745
-    ## TCGA_30 -0.109263705 -0.074038640 -0.1085490167 -0.0198058308 -0.115980586
-    ##               MEpink       MEblue       MEred MEturquoise     MEyellow
-    ## TCGA_1   0.090673458  0.220888926  0.20992613  0.12385690  0.210756213
-    ## TCGA_3  -0.090754734  0.263096346  0.06425612 -0.14941925  0.241485436
-    ## TCGA_4   0.091577327 -0.103934965  0.08307897  0.07586894  0.201528650
-    ## TCGA_5  -0.196531115 -0.234635690 -0.30851857  0.19487690  0.119792495
-    ## TCGA_6   0.294616561  0.242805901  0.17836338  0.14643931  0.379089088
-    ## TCGA_7  -0.178133221 -0.246068443 -0.22304164 -0.26790591 -0.052086498
-    ## TCGA_8   0.180911274  0.060641621  0.05926023  0.13986683  0.085078287
-    ## TCGA_9  -0.114954095 -0.050136017  0.17444761 -0.41929723 -0.048518870
-    ## TCGA_10 -0.277810365 -0.168703365 -0.36823368 -0.06850747 -0.004127823
-    ## TCGA_11  0.234074414 -0.009177969 -0.16347369 -0.25246936 -0.014900705
-    ## TCGA_12  0.163909585  0.032790899  0.15130201  0.13280748  0.078836867
-    ## TCGA_13  0.086287391  0.208111383 -0.07000730 -0.30361208  0.216066324
-    ## TCGA_14 -0.178570402 -0.169024718 -0.35616067  0.19808717  0.054197808
-    ## TCGA_15  0.210279602 -0.027378481  0.13596392 -0.01553056 -0.153138952
-    ## TCGA_16  0.104051937  0.226831461 -0.06417094 -0.04091102 -0.222644011
-    ## TCGA_17 -0.121006668 -0.323803401 -0.15818181 -0.12066528 -0.315772564
-    ## TCGA_18 -0.273081536  0.066083110  0.09738830 -0.04499414 -0.069836785
-    ## TCGA_19 -0.267951569 -0.106143026  0.09760027  0.14020638 -0.154550337
-    ## TCGA_20 -0.048629382 -0.304854919 -0.28752379 -0.17557398 -0.044863303
-    ## TCGA_21 -0.313226967 -0.078662445  0.19613710 -0.32133863 -0.339762405
-    ## TCGA_22  0.276683280  0.011673739  0.10089336  0.06135291 -0.142066804
-    ## TCGA_23  0.195202100  0.300856761  0.07056610  0.13082253  0.069078205
-    ## TCGA_24  0.061447295  0.060888653  0.06330000  0.10291924 -0.198285095
-    ## TCGA_25 -0.119507671 -0.364815392 -0.34418376 -0.03494095 -0.333914411
-    ## TCGA_26 -0.081466540  0.054680486  0.11877228  0.23228032  0.271158197
-    ## TCGA_27 -0.005054076  0.131738166  0.18932745  0.29640129  0.196654934
-    ## TCGA_28  0.243044256  0.246030739  0.10896842  0.20084800  0.055120825
-    ## TCGA_29  0.187738600 -0.029008986  0.13345904  0.13038391  0.049178574
-    ## TCGA_30 -0.153818740  0.089229626  0.11048517 -0.09185225 -0.133553338
+    ##                 ME20         ME16        ME15         ME14          ME19
+    ## TCGA_1   0.103025422 -0.085979768  0.07872600  0.036201625  0.1155179449
+    ## TCGA_3   0.077388088  0.208277206  0.28396200  0.075029346  0.1339219076
+    ## TCGA_4   0.283525364 -0.015779129  0.24892425  0.240541474  0.1659999945
+    ## TCGA_5   0.004878349  0.256686160  0.29543648  0.165513127  0.1793970536
+    ## TCGA_6   0.196332433 -0.202724060  0.06576807  0.219980665  0.1606143575
+    ## TCGA_7  -0.309061016 -0.146727796 -0.30270714 -0.518139586 -0.5193446470
+    ## TCGA_8  -0.180901898 -0.083101393  0.12028732  0.014987299 -0.0009810184
+    ## TCGA_9  -0.014158443 -0.156754417 -0.30826127 -0.339741467 -0.4613021783
+    ## TCGA_10  0.471977840  0.249560020 -0.16770460  0.064724664 -0.1646598532
+    ## TCGA_11 -0.086727123 -0.110125043 -0.23698113 -0.384640759 -0.3233076214
+    ## TCGA_12  0.130058683  0.040692105 -0.13100943  0.123838866  0.1587360867
+    ## TCGA_13 -0.177380898 -0.375057512  0.06719161 -0.383660548 -0.3372767844
+    ## TCGA_14  0.074352071 -0.070708327  0.25641499  0.053958173  0.1744532425
+    ## TCGA_15  0.166798830 -0.117336995 -0.09967809  0.155346101  0.0646724857
+    ## TCGA_16  0.124458900 -0.003326440  0.25037229  0.145776218 -0.0056271056
+    ## TCGA_17 -0.177184502  0.372111905 -0.13085418  0.013332421  0.0622467349
+    ## TCGA_18 -0.010139358  0.018419138  0.14658309  0.033578241 -0.0502907902
+    ## TCGA_19 -0.105347359  0.100940621 -0.18893045 -0.089993877  0.0279343516
+    ## TCGA_20  0.063090995  0.370859516 -0.10886590  0.138195004  0.1251715822
+    ## TCGA_21  0.247349442 -0.177080300 -0.03528816  0.110462422 -0.0121397858
+    ## TCGA_22 -0.094210008 -0.098454899  0.26669427  0.140130354  0.1560703358
+    ## TCGA_23 -0.134667800 -0.072609008  0.17590567 -0.003969142  0.0559605664
+    ## TCGA_24 -0.237916877  0.005787073  0.02423824 -0.010766956  0.1576507066
+    ## TCGA_25 -0.145077975  0.272782176 -0.14672240 -0.069686683  0.0925133214
+    ## TCGA_26 -0.329115346  0.158809785 -0.14792298 -0.126770944 -0.0029033820
+    ## TCGA_27 -0.136027994 -0.177009294 -0.17842783 -0.057076877 -0.0169949330
+    ## TCGA_28  0.004267095 -0.248977965 -0.20414304  0.057011195  0.0806757604
+    ## TCGA_29 -0.064642694 -0.065824790  0.08029586  0.046692531  0.0394803395
+    ## TCGA_30  0.255055780  0.152651429  0.02669649  0.149147113 -0.0561886726
+    ##                ME21         ME28         ME24           ME8          ME9
+    ## TCGA_1   0.02011512  0.070213520  0.070963544  0.1005742246  0.175879038
+    ## TCGA_3   0.14533509  0.240513389  0.097109630  0.0413671717  0.138486295
+    ## TCGA_4   0.11171969  0.055470603 -0.045384832  0.0008061462  0.149309270
+    ## TCGA_5   0.11419077 -0.046389587 -0.071892523 -0.0333749086  0.124228831
+    ## TCGA_6   0.09573965  0.087567816  0.176708955  0.0502289070  0.203514489
+    ## TCGA_7  -0.56731235 -0.514299457 -0.509578918 -0.5065169274 -0.514144174
+    ## TCGA_8   0.04682959  0.176652437  0.122147771  0.1492983690  0.132499407
+    ## TCGA_9  -0.40115667 -0.472828249 -0.475456370 -0.4795429081 -0.502983071
+    ## TCGA_10  0.03066148 -0.080665162  0.187103585 -0.1929783169 -0.075595198
+    ## TCGA_11 -0.26099680 -0.221260234 -0.222182747 -0.2732343291 -0.262071880
+    ## TCGA_12  0.24218073 -0.001809426  0.178738966  0.1210553752  0.113177819
+    ## TCGA_13 -0.41560879 -0.361331695 -0.398709962 -0.3412629796 -0.303770508
+    ## TCGA_14  0.16489960  0.031372683  0.207118923  0.1264930861  0.165070491
+    ## TCGA_15 -0.01011077 -0.029484605  0.166182866  0.0733883529  0.064718440
+    ## TCGA_16  0.01513443  0.032763378 -0.002736111  0.0047487797 -0.009480872
+    ## TCGA_17 -0.02383060  0.109283526 -0.064485131  0.0399616752 -0.085063472
+    ## TCGA_18  0.07927667  0.059840559  0.099922532  0.0697602976  0.011851582
+    ## TCGA_19 -0.04270465 -0.004187904 -0.001851495  0.1159348878  0.014957875
+    ## TCGA_20  0.11938908  0.142667343  0.009276971 -0.0185853821 -0.035615425
+    ## TCGA_21  0.01726009 -0.060542289 -0.105072928 -0.0929620723 -0.152614392
+    ## TCGA_22  0.18527830  0.084729323  0.198922796  0.1649739534  0.115474758
+    ## TCGA_23  0.08295565  0.192813193  0.102252084  0.1844101536  0.117218602
+    ## TCGA_24  0.08978370  0.021838165  0.063634696  0.1573683600  0.062455533
+    ## TCGA_25  0.11098264  0.221709377  0.079938572  0.1175522919  0.030759915
+    ## TCGA_26 -0.13839989  0.190518526 -0.023554770  0.0783302282  0.070103393
+    ## TCGA_27 -0.05795956 -0.013003750  0.035733110  0.1301201803  0.101919311
+    ## TCGA_28  0.03837291  0.034808037  0.046159493  0.1750222699  0.134001677
+    ## TCGA_29  0.08933600  0.173935633  0.101934375  0.1373147219  0.124860247
+    ## TCGA_30  0.11863890 -0.120895148 -0.022943083 -0.1002516083 -0.109147980
 
 ``` r
 # Junction module membership values:
 J1pass$juncModuleMembership[c(1:10),c(1:10)] # only first 10 rows and columns displayed
 ```
 
-    ##                              MMmagenta      MMblack      MMbrown     MMgreen
-    ## chr16:67863992:67864292:2  -0.23360313 -0.325732863 -0.444942641 -0.08791280
-    ## chr17:73512698:73512826:1  -0.08094006  0.229675825 -0.011391738 -0.25474988
-    ## chr3:150321287:150340171:1  0.06573771 -0.213732340 -0.171745722  0.07496463
-    ## chr19:54970588:54970643:1   0.97167802  0.002533670  0.124881927 -0.19279826
-    ## chr7:134853813:134855150:2 -0.30250483  0.182371373 -0.002884807 -0.22242596
-    ## chr19:54969701:54971945:1  -0.31312261 -0.203722062 -0.311638913 -0.17940322
-    ## chr8:23292195:23292904:2    0.02768231 -0.064507301  0.089588094  0.26134373
-    ## chr5:78937020:78938654:1   -0.02332802 -0.151164664 -0.169880089  0.02015707
-    ## chr6:76423542:76425100:1    0.58743267  0.227935382  0.332036552  0.08337998
-    ## chr5:78919313:78936673:1   -0.18573337 -0.002868272  0.187503942  0.09287579
-    ##                                MMpurple      MMpink       MMblue        MMred
-    ## chr16:67863992:67864292:2  -0.125165224 -0.09204984 -0.027967663  0.181449389
-    ## chr17:73512698:73512826:1  -0.290263767 -0.05125795  0.247355082  0.002024700
-    ## chr3:150321287:150340171:1 -0.202661552 -0.18076299  0.065474062 -0.147648667
-    ## chr19:54970588:54970643:1  -0.048729206  0.19404054  0.022194478 -0.169358467
-    ## chr7:134853813:134855150:2 -0.201061187 -0.23068356  0.009690175  0.162665125
-    ## chr19:54969701:54971945:1  -0.292324914  0.01581697 -0.078288686 -0.006762479
-    ## chr8:23292195:23292904:2    0.344782141  0.15708983  0.157409986  0.106497432
-    ## chr5:78937020:78938654:1   -0.008208084 -0.32821259 -0.075902127  0.171078858
-    ## chr6:76423542:76425100:1    0.292457794  0.17375838  0.070354848 -0.040199363
-    ## chr5:78919313:78936673:1    0.069536818 -0.17226152  0.134141854  0.318844108
-    ##                            MMturquoise     MMyellow
-    ## chr16:67863992:67864292:2   0.36208862  0.114626445
-    ## chr17:73512698:73512826:1  -0.20825986  0.041889892
-    ## chr3:150321287:150340171:1  0.02198233  0.159206547
-    ## chr19:54970588:54970643:1  -0.38826280  0.231507544
-    ## chr7:134853813:134855150:2 -0.25151790 -0.168953525
-    ## chr19:54969701:54971945:1   0.41136476  0.232003925
-    ## chr8:23292195:23292904:2    0.17683404  0.357223550
-    ## chr5:78937020:78938654:1    0.12591107  0.007513099
-    ## chr6:76423542:76425100:1   -0.03180853  0.381059921
-    ## chr5:78919313:78936673:1   -0.04573799 -0.097339101
+    ##                             MM20         MM16          MM15         MM14
+    ## chr1:14830:14969:2   -0.14877223  0.052944771 -0.0198539391 -0.153526309
+    ## chr1:17369:17605:2   -0.07993977 -0.248403998 -0.1247984181 -0.039483325
+    ## chr1:17743:17914:2   -0.06385915 -0.185576948 -0.1324204839  0.049227883
+    ## chr1:569158:569317:2 -0.11662347 -0.023285794  0.0007658819 -0.138827147
+    ## chr1:763156:764382:1 -0.11415083  0.072718117  0.1349391358  0.317648078
+    ## chr1:878439:878632:1 -0.08693247 -0.163699774  0.0773272097 -0.007002024
+    ## chr1:878758:879077:1 -0.03800737 -0.189611988  0.1140912037 -0.042286393
+    ## chr1:879189:879287:1  0.08201547 -0.177359464  0.1636950030  0.191416081
+    ## chr1:880181:880421:2  0.06301739  0.096558628  0.4203080058  0.409683730
+    ## chr1:880181:880436:2 -0.04915496  0.005130104  0.3382846892  0.375097592
+    ##                             MM19          MM0        MM21         MM28
+    ## chr1:14830:14969:2   -0.04000515  0.346179640 -0.14458737  0.041006498
+    ## chr1:17369:17605:2   -0.01793684 -0.130997017 -0.30675197  0.183418347
+    ## chr1:17743:17914:2   -0.04453809 -0.257697292 -0.16682654  0.225098647
+    ## chr1:569158:569317:2 -0.02478559  0.423370092 -0.03723287 -0.003926982
+    ## chr1:763156:764382:1  0.50333991  0.008196651  0.31873508  0.182771097
+    ## chr1:878439:878632:1  0.10963058 -0.133608529  0.01334184  0.123534518
+    ## chr1:878758:879077:1  0.06231297 -0.100335353  0.02817631  0.046707983
+    ## chr1:879189:879287:1  0.17892070 -0.097559013  0.04887074  0.129816343
+    ## chr1:880181:880421:2  0.62576224  0.368134688  0.34923326  0.531837366
+    ## chr1:880181:880436:2  0.65508869  0.158788228  0.23439304  0.519129483
+    ##                             MM24        MM8
+    ## chr1:14830:14969:2   -0.33596049 -0.2822884
+    ## chr1:17369:17605:2    0.02556507  0.1961402
+    ## chr1:17743:17914:2    0.23872819  0.2891339
+    ## chr1:569158:569317:2 -0.29098799 -0.2397877
+    ## chr1:763156:764382:1  0.32636260  0.3269458
+    ## chr1:878439:878632:1  0.38115907  0.5768248
+    ## chr1:878758:879077:1  0.42411405  0.5074444
+    ## chr1:879189:879287:1  0.45894553  0.5130710
+    ## chr1:880181:880421:2  0.26577456  0.3033289
+    ## chr1:880181:880436:2  0.24762612  0.4620172
 
 ``` r
 # Junction-to-trait significance (GS, correlation coefficient) and associated P-value (p.GS):
 J1pass$Junctrait[c(1:10),c(1:10)]
 ```
 
-    ##                               GS.ACIN1 p.GS.ACIN1    GS.AGGF1  p.GS.AGGF1
-    ## chr16:67863992:67864292:2   0.34770169  0.0645715  0.13870675 0.473014962
-    ## chr17:73512698:73512826:1  -0.14564325  0.4509414  0.15470317 0.422959393
-    ## chr3:150321287:150340171:1 -0.15045911  0.4359461  0.03457210 0.858691552
-    ## chr19:54970588:54970643:1  -0.02423181  0.9007054 -0.06793467 0.726224617
-    ## chr7:134853813:134855150:2  0.11886027  0.5391427  0.14866877 0.441488817
-    ## chr19:54969701:54971945:1   0.14030811  0.4678699  0.36915764 0.048750353
-    ## chr8:23292195:23292904:2    0.22556544  0.2393897 -0.30304383 0.110044608
-    ## chr5:78937020:78938654:1    0.19815424  0.3028141  0.47905572 0.008557959
-    ## chr6:76423542:76425100:1    0.04220366  0.8279176 -0.26654109 0.162213823
-    ## chr5:78919313:78936673:1    0.10752572  0.5787668  0.51691276 0.004089085
-    ##                                GS.AQR   p.GS.AQR   GS.ARGLU1 p.GS.ARGLU1
-    ## chr16:67863992:67864292:2   0.2083761 0.27803589 -0.26842677 0.159151385
-    ## chr17:73512698:73512826:1   0.1535267 0.42653787  0.25456364 0.182648455
-    ## chr3:150321287:150340171:1 -0.0156095 0.93594547  0.28283342 0.137105906
-    ## chr19:54970588:54970643:1  -0.3515475 0.06147536  0.15507589 0.421829179
-    ## chr7:134853813:134855150:2  0.4425122 0.01622699  0.01204116 0.950568075
-    ## chr19:54969701:54971945:1   0.3328292 0.07769994  0.04793299 0.804974400
-    ## chr8:23292195:23292904:2   -0.1929815 0.31586435  0.47693131 0.008898925
-    ## chr5:78937020:78938654:1    0.2152020 0.26223675 -0.04774351 0.805730778
-    ## chr6:76423542:76425100:1   -0.4064102 0.02868941  0.26710543 0.161292941
-    ## chr5:78919313:78936673:1    0.1973925 0.30471435  0.14220394 0.461816673
-    ##                                 GS.BAG2 p.GS.BAG2
-    ## chr16:67863992:67864292:2   0.065219842 0.7367739
-    ## chr17:73512698:73512826:1  -0.268851962 0.1584666
-    ## chr3:150321287:150340171:1 -0.132832531 0.4921373
-    ## chr19:54970588:54970643:1   0.006052153 0.9751432
-    ## chr7:134853813:134855150:2 -0.073156129 0.7060735
-    ## chr19:54969701:54971945:1  -0.251904453 0.1874189
-    ## chr8:23292195:23292904:2   -0.037108837 0.8484375
-    ## chr5:78937020:78938654:1   -0.196937544 0.3058528
-    ## chr6:76423542:76425100:1   -0.132079090 0.4946179
-    ## chr5:78919313:78936673:1   -0.231062232 0.2278262
+    ##                          GS.ACIN1   p.GS.ACIN1    GS.AGGF1 p.GS.AGGF1
+    ## chr1:14830:14969:2    0.003528657 0.9855059914 -0.02646876 0.89159018
+    ## chr1:17369:17605:2    0.161718535 0.4019685800 -0.15925833 0.40926172
+    ## chr1:17743:17914:2   -0.014423959 0.9408016343  0.04374008 0.82175054
+    ## chr1:569158:569317:2 -0.024231807 0.9007053778 -0.06793467 0.72622462
+    ## chr1:763156:764382:1  0.201223382 0.2952333639 -0.13403070 0.48820542
+    ## chr1:878439:878632:1  0.224990026 0.2406223560 -0.31449073 0.09660253
+    ## chr1:878758:879077:1  0.129715207 0.5024414455 -0.33822422 0.07271972
+    ## chr1:879189:879287:1  0.226587708 0.2372101839 -0.18279777 0.34255685
+    ## chr1:880181:880421:2  0.543446928 0.0023134152  0.25834020 0.17602036
+    ## chr1:880181:880436:2  0.609123130 0.0004533334  0.23732484 0.21511629
+    ##                           GS.AQR    p.GS.AQR   GS.ARGLU1 p.GS.ARGLU1
+    ## chr1:14830:14969:2   -0.33093484 0.079509429  0.19997543  0.29830121
+    ## chr1:17369:17605:2   -0.10506178 0.587547789  0.38183554  0.04095541
+    ## chr1:17743:17914:2    0.06747463 0.728008859  0.22980615  0.23043486
+    ## chr1:569158:569317:2 -0.35154750 0.061475357  0.15507589  0.42182918
+    ## chr1:763156:764382:1  0.10487526 0.588214866 -0.05413338  0.78032269
+    ## chr1:878439:878632:1 -0.02684557 0.890056038 -0.29338520  0.12243145
+    ## chr1:878758:879077:1 -0.03644917 0.851101775  0.01034415  0.95752797
+    ## chr1:879189:879287:1  0.04844585 0.802928058 -0.17567310  0.36201492
+    ## chr1:880181:880421:2  0.35379534 0.059720121 -0.03337284  0.86354720
+    ## chr1:880181:880436:2  0.47477966 0.009255848 -0.22068007  0.24998911
+    ##                           GS.BAG2  p.GS.BAG2
+    ## chr1:14830:14969:2   -0.003491630 0.98565806
+    ## chr1:17369:17605:2   -0.385933921 0.03866051
+    ## chr1:17743:17914:2   -0.341306410 0.06998722
+    ## chr1:569158:569317:2  0.006052153 0.97514320
+    ## chr1:763156:764382:1  0.169537762 0.37928292
+    ## chr1:878439:878632:1 -0.172823404 0.36997683
+    ## chr1:878758:879077:1 -0.313905330 0.09725837
+    ## chr1:879189:879287:1 -0.282704082 0.13729338
+    ## chr1:880181:880421:2 -0.170888366 0.37544122
+    ## chr1:880181:880436:2 -0.231039250 0.22787373
 
 ``` r
 # Module-trait significant associations found:
@@ -1124,125 +1857,202 @@ J1pass$sig.cors.trait[1:10] # only first 10 displayed
 ```
 
     ## $ACIN1
-    ##     MEblack MEturquoise 
-    ##           2           9 
+    ## ME19 ME28  ME8  ME9 ME10 ME25 
+    ##    5    8   10   11   25   31 
     ## 
     ## $AGGF1
-    ##  MEgreen MEpurple 
-    ##        4        5 
+    ## ME28  ME7  ME2 
+    ##    8   22   23 
     ## 
     ## $AQR
-    ##  MEbrown MEpurple MEyellow 
-    ##        3        5       10 
+    ## ME19 ME21 ME28 ME17 ME23  ME2 
+    ##    5    7    8   20   21   23 
     ## 
     ## $ARGLU1
-    ##   MEblue MEyellow 
-    ##        7       10 
+    ## ME16  ME3 
+    ##    2   15 
     ## 
     ## $BAG2
-    ## MEblack MEbrown  MEpink  MEblue   MEred  MEgrey 
-    ##       2       3       6       7       8      11 
+    ## ME16 ME12  ME3  ME5  ME1 
+    ##    2   13   15   26   29 
     ## 
     ## $BCAS1
-    ## named integer(0)
+    ## ME20 ME28 ME10  ME5 
+    ##    1    8   25   26 
     ## 
     ## $BCAS2
-    ##  MEgreen MEpurple    MEred MEyellow   MEgrey 
-    ##        4        5        8       10       11 
+    ## ME16  ME9 ME23  ME2  ME4  ME1 
+    ##    2   11   21   23   24   29 
     ## 
     ## $BUB3
-    ##     MEgreen    MEpurple      MEpink MEturquoise    MEyellow 
-    ##           4           5           6           9          10 
+    ## ME8 ME9 ME7 ME2 ME4 ME5 
+    ##  10  11  22  23  24  26 
     ## 
     ## $BUD13
-    ## MEmagenta   MEgreen 
-    ##         1         4 
+    ## ME14 ME19 ME21 ME18 ME22 ME17 ME23  ME2 ME26  ME1 
+    ##    4    5    7   17   18   20   21   23   28   29 
     ## 
     ## $BUD31
-    ## MEgreen  MEgrey 
-    ##       4      11
+    ## ME20 ME14  ME0  ME8 ME12  ME7  ME2 ME10  ME5  ME1  ME6 
+    ##    1    4    6   10   13   22   23   25   26   29   30
 
 ``` r
 # Module-trait correlation coefficients and P-values:
 J1pass$moduleTraitCor[,c(1:10)]
 ```
 
-    ##                    ACIN1       AGGF1         AQR     ARGLU1         BAG2
-    ## MEmagenta    0.069728539 -0.08673767 -0.33022969 0.14712336  0.044211679
-    ## MEblack     -0.428912461 -0.09463585 -0.15955033 0.12431981 -0.385068103
-    ## MEbrown     -0.219016606 -0.22529691 -0.39988696 0.30498525 -0.401685147
-    ## MEgreen      0.001542325 -0.45856959 -0.34878721 0.15690121 -0.211707501
-    ## MEpurple    -0.038709640 -0.60777054 -0.50236496 0.02833604  0.009729651
-    ## MEpink       0.150135485 -0.12527138 -0.22024251 0.25343756 -0.531795805
-    ## MEblue       0.135614608 -0.01765664 -0.08599813 0.54423525 -0.607561779
-    ## MEred        0.240969924  0.07655332  0.18358717 0.14065449 -0.409487641
-    ## MEturquoise  0.475091852 -0.14970383  0.13048211 0.02231226 -0.199597035
-    ## MEyellow     0.281465373 -0.33385409 -0.42021215 0.52930273 -0.283007367
-    ## MEgrey       0.137946427 -0.04397522 -0.05467228 0.09366811 -0.428745351
-    ##                    BCAS1       BCAS2        BUB3       BUD13       BUD31
-    ## MEmagenta   -0.139507325 -0.08777918  0.17388216 -0.40533582  0.10498794
-    ## MEblack     -0.286629500 -0.08280001 -0.05281119 -0.03672399  0.20445842
-    ## MEbrown     -0.229632540 -0.28684239 -0.28793087 -0.30104613 -0.12923171
-    ## MEgreen      0.025563009 -0.40123319 -0.56797376 -0.41866494 -0.44909493
-    ## MEpurple    -0.231467846 -0.47286661 -0.48533216 -0.31776880 -0.17866536
-    ## MEpink       0.054165867 -0.11745096 -0.37656461  0.07783854 -0.04054342
-    ## MEblue       0.074204752 -0.32107224 -0.36228018 -0.18609706 -0.06918997
-    ## MEred       -0.019255685 -0.38528982 -0.22807909 -0.02069207 -0.16758875
-    ## MEturquoise -0.007909523 -0.36037039 -0.60179527  0.12412620 -0.28297110
-    ## MEyellow    -0.153325277 -0.56163083 -0.37881639 -0.26498906  0.17508647
-    ## MEgrey       0.251433145 -0.41866263 -0.32184737 -0.35948850 -0.51290525
+    ##             ACIN1        AGGF1          AQR       ARGLU1         BAG2
+    ## ME20 -0.094187007 -0.079875341  0.103057540 -0.084712531  0.184627441
+    ## ME16  0.126069973  0.125829436  0.338210955 -0.376360135  0.474339873
+    ## ME15  0.243069048  0.226191344  0.225742639  0.149470677 -0.341869191
+    ## ME14  0.223856908  0.117045011  0.345740870 -0.060061133  0.104749586
+    ## ME19  0.684845147  0.031569628  0.506309064 -0.151149183  0.027515334
+    ## ME0   0.247170248 -0.180359608 -0.140926106  0.069882844  0.142406195
+    ## ME21  0.174891789  0.031564261  0.383094901 -0.124989088  0.160144243
+    ## ME28  0.471644299  0.368091825  0.398830803 -0.077019991 -0.287583202
+    ## ME24  0.103256854 -0.004519532  0.250607016 -0.194724351 -0.302337422
+    ## ME8   0.449308783  0.026993582  0.305783000 -0.129593259 -0.359518739
+    ## ME9   0.573457777 -0.213310151  0.098449971  0.061249011 -0.293339957
+    ## ME29  0.317518097 -0.082450248  0.133917960  0.077739147 -0.287553535
+    ## ME12  0.175492079  0.033631153  0.124934572 -0.039409627 -0.417383505
+    ## ME13 -0.243129196  0.010254087 -0.031415695  0.187689029 -0.187542424
+    ## ME3  -0.144160127  0.011575137 -0.120241864  0.394503834 -0.558334627
+    ## ME30  0.048156448  0.024933861 -0.248329470  0.090333536 -0.288592452
+    ## ME18 -0.054355839 -0.041905047 -0.351361550  0.194504785  0.012240492
+    ## ME22  0.069960063 -0.012259707 -0.254955535  0.096372081  0.008950175
+    ## ME31  0.093180213  0.047151134 -0.119823182 -0.208025937 -0.192216657
+    ## ME17 -0.078960714 -0.346169303 -0.377136762 -0.061396350  0.168675149
+    ## ME23  0.183746287 -0.242457340 -0.384934483 -0.001347678 -0.035949986
+    ## ME7   0.204561585 -0.419069811 -0.171207053 -0.111378829  0.106850776
+    ## ME2  -0.151710835 -0.480170237 -0.547714102  0.073629160 -0.050249492
+    ## ME4   0.079198346 -0.323731363 -0.233958620 -0.074651633 -0.070472876
+    ## ME10  0.421242304  0.084588457  0.273460762 -0.156744454  0.011293134
+    ## ME5   0.352272741  0.146359616  0.003781174  0.114389694 -0.512887900
+    ## ME11 -0.150156070 -0.094566937 -0.173637718  0.226521429 -0.254513104
+    ## ME26 -0.153276274  0.017114139 -0.345141121  0.201171836 -0.023817382
+    ## ME1  -0.001826104 -0.194361100 -0.284137744  0.210736823 -0.421367891
+    ## ME6  -0.201732338  0.157294691  0.092513744 -0.033744113 -0.124718915
+    ## ME25 -0.618527210  0.031132130 -0.262089771  0.162372896 -0.021662140
+    ## ME27  0.110741164 -0.021406347  0.143499899 -0.033098912  0.300609740
+    ##             BCAS1        BCAS2         BUB3        BUD13        BUD31
+    ## ME20 -0.419622847  0.196918572  0.311627003  0.366074398  0.633608568
+    ## ME16  0.294374914  0.407285851  0.277238396  0.325643598 -0.004556284
+    ## ME15 -0.056297280 -0.018853025 -0.183092638  0.137846779  0.215915883
+    ## ME14 -0.196672710  0.249566053  0.132162469  0.589420512  0.393537815
+    ## ME19 -0.001844834 -0.050150402 -0.015933364  0.374126680  0.047405024
+    ## ME0  -0.296625838 -0.065840262  0.104166821  0.008623718  0.510934892
+    ## ME21 -0.014169618  0.194779564  0.173661546  0.438139067  0.201513264
+    ## ME28  0.630038368 -0.021985600 -0.191515260  0.153129652 -0.281317205
+    ## ME24  0.086872982  0.004656436 -0.330895444  0.321509843  0.091009461
+    ## ME8   0.310105871 -0.350021573 -0.448492175  0.005127489 -0.526701842
+    ## ME9  -0.068441911 -0.533008217 -0.442312760 -0.005521309 -0.037926863
+    ## ME29  0.076625305 -0.321609412 -0.149093392 -0.114575132 -0.301348449
+    ## ME12 -0.214239209  0.052423974 -0.018823537  0.352189726  0.418334202
+    ## ME13 -0.202445807  0.061287979  0.220185646  0.081040463  0.077675299
+    ## ME3  -0.124530472 -0.134770123 -0.357502805  0.085074630 -0.070560625
+    ## ME30 -0.024384725 -0.091762975 -0.233417798 -0.048112615  0.034745785
+    ## ME18 -0.166103309 -0.050645621  0.268136808 -0.401105917  0.187740583
+    ## ME22 -0.276463273 -0.177649631  0.084863326 -0.415328354  0.161064141
+    ## ME31 -0.286970779 -0.224568605 -0.194717581 -0.365205753 -0.077371549
+    ## ME17 -0.053164012 -0.175700192 -0.161224907 -0.396723765 -0.328096962
+    ## ME23 -0.068907490 -0.413144300 -0.246844917 -0.573898924 -0.223313467
+    ## ME7   0.055707445 -0.253342992 -0.455579518 -0.242942736 -0.416963911
+    ## ME2  -0.202510101 -0.477939050 -0.490436353 -0.563212301 -0.372929614
+    ## ME4  -0.219591529 -0.428881826 -0.621465729 -0.228480460 -0.334942099
+    ## ME10  0.767819952  0.107936312 -0.053112533  0.022359808 -0.492583261
+    ## ME5   0.560563951 -0.215846983 -0.385250506 -0.359050018 -0.423819031
+    ## ME11 -0.081650063 -0.039801443 -0.063740583 -0.257595906  0.022354225
+    ## ME26  0.113043957 -0.185370942  0.007698684 -0.600202777 -0.261603896
+    ## ME1   0.129299444 -0.426522523 -0.312920131 -0.525158845 -0.393912865
+    ## ME6   0.295845740  0.029692149  0.076870658 -0.274300673 -0.523043190
+    ## ME25  0.067959415  0.181555281  0.282259617 -0.212227145 -0.081945309
+    ## ME27  0.095065855  0.299743346  0.317378696  0.148468043 -0.057875557
 
 ``` r
 J1pass$moduleTraitPvalue[,c(1:10)]
 ```
 
-    ##                   ACIN1        AGGF1         AQR      ARGLU1         BAG2
-    ## MEmagenta   0.719280601 0.6545897706 0.080191173 0.446303686 0.8198596605
-    ## MEblack     0.020251253 0.6253297225 0.408392266 0.520526469 0.0391365335
-    ## MEbrown     0.253667671 0.2399644251 0.031608659 0.107671839 0.0307809783
-    ## MEgreen     0.993664611 0.0123517158 0.063685549 0.416318405 0.2702504006
-    ## MEpurple    0.841979007 0.0004705027 0.005484413 0.883991595 0.9600490047
-    ## MEpink      0.436945228 0.5173140464 0.250953319 0.184658131 0.0029876012
-    ## MEblue      0.483032379 0.9275654419 0.657356182 0.002272977 0.0004732029
-    ## MEred       0.207944860 0.6930654497 0.340440503 0.466760816 0.0273903521
-    ## MEturquoise 0.009203326 0.4382797715 0.499896551 0.908537100 0.2992353575
-    ## MEyellow    0.139098244 0.0767342550 0.023231847 0.003151976 0.1368540783
-    ## MEgrey      0.475468087 0.8208076337 0.778189549 0.628886220 0.0203053825
-    ##                 BCAS1       BCAS2         BUB3      BUD13       BUD31
-    ## MEmagenta   0.4704391 0.650701333 0.3670068161 0.02915457 0.587811863
-    ## MEblack     0.1316864 0.669370068 0.7855629152 0.84999163 0.287373838
-    ## MEbrown     0.2307970 0.131387138 0.1298649701 0.11252661 0.504049203
-    ## MEgreen     0.8952794 0.030987341 0.0013092168 0.02379772 0.014531550
-    ## MEpurple    0.2269880 0.009583229 0.0076142121 0.09299147 0.353764662
-    ## MEpink      0.7801940 0.543998739 0.0440654635 0.68816618 0.834592904
-    ## MEblue      0.7020494 0.089456776 0.0534453028 0.33376423 0.721363120
-    ## MEred       0.9210249 0.039014191 0.2340542698 0.91515402 0.384866758
-    ## MEturquoise 0.9675183 0.054810243 0.0005533773 0.52118128 0.136906558
-    ## MEyellow    0.4271521 0.001523249 0.0427145977 0.16476566 0.363645593
-    ## MEgrey      0.1882734 0.023798568 0.0886423606 0.05544971 0.004439167
+    ##             ACIN1       AGGF1         AQR     ARGLU1        BAG2        BCAS1
+    ## ME20 6.269782e-01 0.680427163 0.594733109 0.66217577 0.337663672 2.344606e-02
+    ## ME16 5.146256e-01 0.515434632 0.072731651 0.04418979 0.009330264 1.211169e-01
+    ## ME15 2.038900e-01 0.238053674 0.239010959 0.43900152 0.069496989 7.717669e-01
+    ## ME14 2.430620e-01 0.545401325 0.066196095 0.75694777 0.588664537 3.065168e-01
+    ## ME19 4.165264e-05 0.870857244 0.005071119 0.43381989 0.887330124 9.924220e-01
+    ## ME0  1.961252e-01 0.349143409 0.465892128 0.71868430 0.461173335 1.181661e-01
+    ## ME21 3.641877e-01 0.870879018 0.040238937 0.51826604 0.406626979 9.418437e-01
+    ## ME28 9.797457e-03 0.049455751 0.032103125 0.69128507 0.130349755 2.495617e-04
+    ## ME24 5.940169e-01 0.981436574 0.189777683 0.31142897 0.110917570 6.540841e-01
+    ## ME8  1.447904e-02 0.889453522 0.106707996 0.50284672 0.055427688 1.015969e-01
+    ## ME9  1.145748e-03 0.266555756 0.611393153 0.75228801 0.122491788 7.242589e-01
+    ## ME29 9.326398e-02 0.670688902 0.488574688 0.68854462 0.130391183 6.927907e-01
+    ## ME12 3.625177e-01 0.862500909 0.518449988 0.83915801 0.024274870 2.644290e-01
+    ## ME13 2.037747e-01 0.957897453 0.871481763 0.32957122 0.329956007 2.922477e-01
+    ## ME3  4.556143e-01 0.952479024 0.534402087 0.03419454 0.001646008 5.198145e-01
+    ## ME30 8.040826e-01 0.897843239 0.193968018 0.64120287 0.128946135 9.000819e-01
+    ## ME18 7.794419e-01 0.829117368 0.061622345 0.31198560 0.949750769 3.891541e-01
+    ## ME22 7.183860e-01 0.949671989 0.181952658 0.61896958 0.963247389 1.465620e-01
+    ## ME31 6.306823e-01 0.808096494 0.535836588 0.27886248 0.317823012 1.312069e-01
+    ## ME17 6.838985e-01 0.065838443 0.043719043 0.75171062 0.381748454 7.841637e-01
+    ## ME23 3.400149e-01 0.205066015 0.039210414 0.99446415 0.853118941 7.224562e-01
+    ## ME7  2.871254e-01 0.023648563 0.374538055 0.56515293 0.581166358 7.740965e-01
+    ## ME2  4.320935e-01 0.008383528 0.002101724 0.70425729 0.795741613 2.920912e-01
+    ## ME4  6.829960e-01 0.086686376 0.221886700 0.70033689 0.716405667 2.523923e-01
+    ## ME10 2.286123e-02 0.662641611 0.151178489 0.41679009 0.953635524 1.164466e-06
+    ## ME5  6.090471e-02 0.448693575 0.984468892 0.55461710 0.004440737 1.562082e-03
+    ## ME11 4.368816e-01 0.625582693 0.367691278 0.23735109 0.182738316 6.737097e-01
+    ## ME26 4.273016e-01 0.929785490 0.066699295 0.29535968 0.902395479 5.593150e-01
+    ## ME1  9.924990e-01 0.312350189 0.135225783 0.27250417 0.022816377 5.038238e-01
+    ## ME6  2.939879e-01 0.415135735 0.633139198 0.86204344 0.519177954 1.191827e-01
+    ## ME25 3.484392e-04 0.872632410 0.169608780 0.40004122 0.911191531 7.261287e-01
+    ## ME27 5.673959e-01 0.912236185 0.457702661 0.86465698 0.113074294 6.237520e-01
+    ##            BCAS2         BUB3        BUD13        BUD31
+    ## ME20 0.305900350 0.0998428295 0.0508130483 0.0002244111
+    ## ME16 0.028314805 0.1453868677 0.0847348517 0.9812856454
+    ## ME15 0.922671465 0.3417653977 0.4757900829 0.2606189580
+    ## ME14 0.191685021 0.4943430557 0.0007666807 0.0346761332
+    ## ME19 0.796136011 0.9346192565 0.0455661021 0.8070823501
+    ## ME0  0.734358885 0.5907515946 0.9645870908 0.0046204734
+    ## ME21 0.311289102 0.3676245238 0.0174414920 0.2945236123
+    ## ME28 0.909870734 0.3196258237 0.4277492097 0.1393152805
+    ## ME24 0.980874356 0.0795473977 0.0889962956 0.6386985766
+    ## ME8  0.062689657 0.0146804006 0.9789399791 0.0033316789
+    ## ME9  0.002910364 0.0162808211 0.9773228473 0.8451359171
+    ## ME29 0.088891774 0.4401708163 0.5539711784 0.1121483577
+    ## ME12 0.787099313 0.9227920571 0.0609698160 0.0239201286
+    ## ME13 0.752135284 0.2510787900 0.6760143446 0.6887877681
+    ## ME3  0.485786960 0.0569110216 0.6608169422 0.7160669897
+    ## ME30 0.635911399 0.2229877131 0.8042575500 0.8579887585
+    ## ME18 0.794165438 0.1596195953 0.0310456526 0.3294359743
+    ## ME22 0.356552571 0.6616097607 0.0250564260 0.4039012826
+    ## ME31 0.241527791 0.3114461289 0.0514064441 0.6899449300
+    ## ME17 0.361939719 0.4034259856 0.0331082514 0.0822803726
+    ## ME23 0.025909389 0.1967335992 0.0011334066 0.2442378786
+    ## ME7  0.184827593 0.0130079868 0.2041324910 0.0244327978
+    ## ME2  0.008735785 0.0069130149 0.0014672273 0.0463176574
+    ## ME4  0.020261167 0.0003203793 0.2332097527 0.0757192085
+    ## ME10 0.577309172 0.7843677856 0.9083430096 0.0066348573
+    ## ME5  0.260774818 0.0390358606 0.0557698348 0.0219553550
+    ## ME11 0.837579809 0.7425419531 0.1773130609 0.9083657979
+    ## ME26 0.335687457 0.9683837143 0.0005775188 0.1704301537
+    ## ME1  0.021036779 0.0983696846 0.0034423895 0.0344885153
+    ## ME6  0.878479426 0.6918546064 0.1498766885 0.0035993082
+    ## ME25 0.345903947 0.1379390158 0.2690488387 0.6725945238
+    ## ME27 0.114167502 0.0934157679 0.4421126249 0.7655429590
 
 In order to explore module-trait significant associations found by
 **JCNA1pass**, users can use the **JCNAModTrait()** function to plot
 Module membership vs. Junction significance.
 
-Here we explore the association between brown module and DDX1 splicing
-factor expression:
+Here we explore the association between module No. 4 (turquoise) and
+DDX1 splicing factor expression:
 
 ``` r
-jMT <- JCNAModTrait(J1pass, trait ="DDX1",module = "brown", cor.method = "bicor")
+jMT <- JCNAModTrait(J1pass, trait ="DDX1",module = "4", cor.method = "bicor")
 
 jMT$MMplot
 ```
 
-    ## [1] "Calculating module membership values and trait correlations"
-
-    ## Registered S3 method overwritten by 'quantmod':
-    ##   method            from
-    ##   as.zoo.data.frame zoo
-
-![](DJExpress_README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
-
-<img src="ReadFig/tutorial_MMvsJCplot.png" width="787" />
+<img src="/Users/paez/Downloads/tutorial_MMvsJCplot.png" width="855" />
 
 ***jMT$MMplot*** shows an interactive scatterplot of Junction
 Significance (JS) for DDX1 expression vs. Module Membership (MM) in the
@@ -1281,8 +2091,8 @@ no correlation between junction and gene significance for trait) are
 kept for network re-construction using **JCNA2pass()** function:
 
 ``` r
-# load path to gtf file:
-gtf0 <- system.file("extdata", "chr1.gtf.gz", package = "DJExpress")
+# Indicate path to gtf file:
+gtf0 <- "~/Downloads/gencode.v32lift37.annotation.gtf" # gtf downloaded from GENCODE website
 
 # load gene expression data:
 gexp <- system.file("extdata", "genExpr.rds", package = "DJExpress")
@@ -1369,25 +2179,173 @@ J2pass <- JCNA2pass(pass1.out = J1pass, GenePrepare.out = JgPrep,
     ## Allowing parallel execution with up to 2 working processes.
     ##  Flagging junctions and samples with too many missing values...
     ##   ..step 1
+    ##  Flagging junctions and samples with too many missing values...
+    ##   ..step 1
+
+    ## [1] "Choosing the soft-thresholding power"
+    ## pickSoftThreshold: will use block size 5257.
+    ##  pickSoftThreshold: calculating connectivity for given powers...
+    ##    ..working on genes 1 through 5257 of 5257
+    ##    Power SFT.R.sq  slope truncated.R.sq  mean.k. median.k.  max.k.
+    ## 1      1   0.0859  0.862          0.902 1230.000  1.23e+03 1810.00
+    ## 2      2   0.1970 -0.751          0.956  433.000  4.18e+02  890.00
+    ## 3      3   0.5500 -1.250          0.988  188.000  1.71e+02  517.00
+    ## 4      4   0.7120 -1.530          0.995   93.600  7.95e+01  330.00
+    ## 5      5   0.7980 -1.660          0.999   51.200  4.06e+01  225.00
+    ## 6      6   0.8420 -1.770          0.998   30.300  2.25e+01  160.00
+    ## 7      7   0.8710 -1.860          0.998   19.000  1.32e+01  118.00
+    ## 8      8   0.8940 -1.910          0.998   12.600  8.20e+00   90.20
+    ## 9      9   0.9050 -1.940          0.995    8.740  5.37e+00   70.40
+    ## 10    10   0.9100 -1.960          0.990    6.300  3.73e+00   56.30
+    ## 11    12   0.9140 -1.990          0.980    3.610  1.96e+00   38.00
+    ## 12    14   0.8980 -2.000          0.973    2.300  1.09e+00   27.00
+    ## 13    16   0.8980 -1.920          0.974    1.580  6.46e-01   20.00
+    ## 14    18   0.9080 -1.820          0.987    1.160  4.03e-01   15.40
+    ## 15    20   0.9280 -1.700          0.982    0.886  2.62e-01   12.10
+    ## 16    22   0.9430 -1.610          0.980    0.701  1.73e-01   10.10
+    ## 17    24   0.9330 -1.640          0.979    0.570  1.16e-01    9.31
+    ## 18    26   0.9400 -1.630          0.989    0.473  8.03e-02    8.59
+    ## 19    28   0.9530 -1.600          0.991    0.399  5.61e-02    7.94
+    ## 20    30   0.9480 -1.600          0.984    0.341  3.97e-02    7.36
+
+    ## [1] "Constructing gene effect-independent junction network and modules"
+    ## Allowing parallel execution with up to 2 working processes.
+    ## [1] " modules identified:31"
+    ## 
+    ##         black          blue         brown          cyan     darkgreen 
+    ##            47           143           139            27            23 
+    ##      darkgrey    darkorange       darkred darkturquoise         green 
+    ##            23            21            23            23            50 
+    ##   greenyellow          grey        grey60     lightcyan    lightgreen 
+    ##            33          3989            27            27            25 
+    ##   lightyellow       magenta  midnightblue        orange          pink 
+    ##            25            41            27            23            43 
+    ##        purple           red     royalblue   saddlebrown        salmon 
+    ##            36            48            24            20            32 
+    ##       skyblue     steelblue           tan     turquoise         white 
+    ##            20            20            32           175            20 
+    ##        yellow 
+    ##            51 
+    ## [1] "Label 0 is reserved for genes outside of all modules"
+
+    ## [1] "Calculating module membership values and trait correlations"
+
+    ## Registered S3 method overwritten by 'quantmod':
+    ##   method            from
+    ##   as.zoo.data.frame zoo
+
+    ## [1] "Calculating adjacency and saving Cytoscape tables"
+    ## Allowing parallel execution with up to 2 working processes.
+    ## ..connectivity..
+    ## ..matrix multiplication (system BLAS)..
+    ## ..normalization..
+    ## ..done.
+    ## [1] "done"
 
 ``` r
 # summary of JCNA2pass output:
 summary(J2pass)
 ```
 
-    ##                  Length Class  Mode
-    ## Junct.sampletree 0      -none- NULL
-    ## net              0      -none- NULL
-    ## MEs              0      -none- NULL
-    ## module.den       0      -none- NULL
-    ## JunctMM          0      -none- NULL
-    ## MMPvalue         0      -none- NULL
-    ## JunctTS          0      -none- NULL
-    ## JSPvalue         0      -none- NULL
-    ## MMvsJunctSig     0      -none- NULL
-    ## modTOM           0      -none- NULL
-    ## modGenes.2       0      -none- NULL
-    ## modGenes         0      -none- NULL
-    ## modNames         0      -none- NULL
-    ## Cytoscape.input  0      -none- NULL
-    ## VisANT.input     0      -none- NULL
+    ##                  Length   Class        Mode     
+    ## Junct.sampletree        3 recordedplot list     
+    ## net                    10 -none-       list     
+    ## MEs                    31 data.frame   list     
+    ## module.den              2 -none-       list     
+    ## JunctMM                31 data.frame   list     
+    ## MMPvalue               31 data.frame   list     
+    ## JunctTS                 5 data.frame   list     
+    ## JSPvalue                5 data.frame   list     
+    ## MMvsJunctSig           31 -none-       list     
+    ## modTOM           15912121 -none-       numeric  
+    ## modGenes.2           3989 -none-       character
+    ## modGenes             3989 -none-       character
+    ## modNames               31 -none-       character
+    ## Cytoscape.input        31 -none-       list     
+    ## VisANT.input           31 -none-       list
+
+``` r
+# Re-constructed network dendrogram:
+J2pass$module.den
+```
+
+<img src="/Users/paez/Downloads/2passdendro.png" width="571" />
+
+``` r
+# Examples of junction modules significantly associated to DDX1 splicing factor expression:
+J2pass$MMvsJunctSig$purple
+```
+
+<img src="/Users/paez/Downloads/purplemod.png" width="855" />
+
+``` r
+# Junctions in purple module (first 10 shown):
+J2pass$net$colors[which(J2pass$net$colors=="purple")[1:10]]
+```
+
+    ##   chr2:74708214:74708349:2   chr2:99193607:99203938:1 
+    ##                   "purple"                   "purple" 
+    ## chr2:122120877:122122669:2 chr3:126741185:126741594:1 
+    ##                   "purple"                   "purple" 
+    ##   chr6:31927897:31927996:1   chr6:31930869:31931189:1 
+    ##                   "purple"                   "purple" 
+    ##   chr6:31933791:31934485:1 chr7:100279859:100279944:2 
+    ##                   "purple"                   "purple" 
+    ## chr7:100280106:100280212:2 chr7:100280854:100280926:2 
+    ##                   "purple"                   "purple"
+
+**JCNA2pass** output includes tables in the format required to be loaded
+in network visualization tools such as Cytoscape and VisANT which are
+saved as text files in the working directoy:
+
+``` r
+# Network edges data of purple module formatted for Cytoscape:
+J2pass$Cytoscape.input$purple$edgeData[c(1:10),]
+```
+
+    ##    fromNode   toNode     weight  direction fromAltName toAltName
+    ## 1   CCDC142   PLXNA1 0.02750298 undirected     CCDC142    PLXNA1
+    ## 2   CCDC142   SKIV2L 0.03256128 undirected     CCDC142    SKIV2L
+    ## 3   CCDC142 SKIV2L.1 0.03324313 undirected     CCDC142    SKIV2L
+    ## 4   CCDC142 SKIV2L.2 0.02877763 undirected     CCDC142    SKIV2L
+    ## 5   CCDC142   GIGYF1 0.03382747 undirected     CCDC142    GIGYF1
+    ## 6   CCDC142 GIGYF1.1 0.02298797 undirected     CCDC142    GIGYF1
+    ## 7   CCDC142 GIGYF1.2 0.02046708 undirected     CCDC142    GIGYF1
+    ## 8   CCDC142 GIGYF1.3 0.03512255 undirected     CCDC142    GIGYF1
+    ## 9   CCDC142 GIGYF1.4 0.03946027 undirected     CCDC142    GIGYF1
+    ## 10  CCDC142 GIGYF1.6 0.02237523 undirected     CCDC142    GIGYF1
+
+``` r
+# Network nodes data of purple module formatted for Cytoscape:
+J2pass$Cytoscape.input$purple$nodeData[c(1:10),]
+```
+
+    ##    nodeName altName nodeAttr[nodesPresent, ]
+    ## 1   CCDC142 CCDC142                   purple
+    ## 2    INPP4A  INPP4A                   purple
+    ## 3    CLASP1  CLASP1                   purple
+    ## 4    PLXNA1  PLXNA1                   purple
+    ## 5    SKIV2L  SKIV2L                   purple
+    ## 6  SKIV2L.1  SKIV2L                   purple
+    ## 7  SKIV2L.2  SKIV2L                   purple
+    ## 8    GIGYF1  GIGYF1                   purple
+    ## 9  GIGYF1.1  GIGYF1                   purple
+    ## 10 GIGYF1.2  GIGYF1                   purple
+
+``` r
+# Network visualization using Cytoscape:
+```
+
+<img src="/Users/paez/Downloads/cytoscapeex.png" width="1897" />
+
+***Note***: On Cytoscape 3.8.0, you can import table network using
+**File** -&gt; **Import** -&gt; **Network from File** and selecting the
+module edge file. On the import dialogue box, select the following
+settings:
+
+**fromNode** column as the Source Node  
+**toNode** column as the Target Node  
+**weight** column should be left as an Edge Attribute  
+**direction** column as interaction type  
+**fromAltName** as Source Node Attribute  
+**toAltName** as Target Node Attribute.
