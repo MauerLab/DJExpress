@@ -18,6 +18,10 @@ DJEanalize(
   topJunct = NULL,
   targetGene = NULL,
   legend.position = "right",
+  volc.axes.face = "plain",
+  volc.axes.col = "black",
+  volc.axes.size = 11,
+  volc.axes.angle = 0,
   scale_color_manual = c("#005BA2", "#D44F4F", "#B3B4B5")
 )
 }
@@ -47,6 +51,14 @@ DJEanalize(
 \item{targetGene}{vector or factor specifying the genes whose significant junctions should be labeled in volcano plot}
 
 \item{legend.position}{character indicating the position of labels in volcano plot. Allowed values are: “left”, “top”, “right”, “bottom”. Default "right".}
+
+\item{volc.axes.face}{character indicating the font face of axes tick labels in volcano plot. Allowed values are: "plain", "italic", "bold", "bold.italic"}
+
+\item{volc.axes.col}{character indicating the color of axes tick labels in volcano plot}
+
+\item{volc.axes.size}{numeric indicating the size of axes tick labels in volcano plot}
+
+\item{volc.axes.angle}{numeric indicating the angle of axes tick labels in volcano plot}
 
 \item{scale_color_manual}{vector of aesthetic values (colors) to indicate significance of data values in volcano plot (default are #005BA2 for downregulated, #D44F4F for upregulated and #B3B4B5 for non-significant junctions)}
 }

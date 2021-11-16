@@ -14,6 +14,10 @@
 #' @param topJunct numeric: number of top significant junctions that should be labeled in volcano plot
 #' @param targetGene vector or factor specifying the genes whose significant junctions should be labeled in volcano plot
 #' @param legend.position character indicating the position of labels in volcano plot. Allowed values are: “left”, “top”, “right”, “bottom”. Default "right".
+#' @param volc.axes.face character indicating the font face of axes tick labels in volcano plot. Allowed values are: "plain", "italic", "bold", "bold.italic"
+#' @param volc.axes.col character indicating the color of axes tick labels in volcano plot
+#' @param volc.axes.size numeric indicating the size of axes tick labels in volcano plot
+#' @param volc.axes.angle numeric indicating the angle of axes tick labels in volcano plot
 #' @param scale_color_manual vector of aesthetic values (colors) to indicate significance of data values in volcano plot (default are #005BA2 for downregulated, #D44F4F for upregulated and #B3B4B5 for non-significant junctions)
 #' @section Details:
 #' This wrapper function receives DJEprepare() output object and performs junction expression normalization and differential junction usage analysis. The differential analysis is an implementation of limma::diffSplice() method.
@@ -27,6 +31,7 @@
 #' logFC.plot: Regression plot of Absolute logFC ~ Relative logFC for differentially expressed junctions (basal vs tested sample group)
 #  model.fit: Confidence and prediction intervals for Linear Regression (Absolute logFC ~ Relative logFC)
 #  group.par: Labeling of junctions in regression plot based on fitted model, FDR and logFC cutoffs
+#' @importFrom ggplot2 element_text
 #' @importFrom grDevices dev.off recordPlot
 #' @importFrom graphics abline par text
 #' @importFrom stats cor.test dist lm median p.adjust pf predict pt var
@@ -52,6 +57,10 @@ DJEanalize <-
            topJunct = NULL,
            targetGene = NULL,
            legend.position = "right",
+           volc.axes.face = "plain",
+           volc.axes.col = "black",
+           volc.axes.size = 11,
+           volc.axes.angle = 0,
            scale_color_manual = c("#005BA2", "#D44F4F", "#B3B4B5")) {
     logFC.ebayes <- Significant <- GeneID <- NULL
     junctExpr <- prepare.out$JunctExprfilt
@@ -437,7 +446,11 @@ DJEanalize <-
               box.padding = 0.4,
               size = 5
             ) +
-            ggplot2::theme_bw(base_size = 12) + ggplot2::theme(legend.position = "right")
+            ggplot2::theme_bw(base_size = 12) + ggplot2::theme(legend.position = legend.position,
+                                                               axis.text.x = element_text(face=volc.axes.face, color=volc.axes.col,
+                                                                                          size=volc.axes.size, angle=volc.axes.angle),
+                                                               axis.text.y = element_text(face=volc.axes.face, color=volc.axes.col,
+                                                                                          size=volc.axes.size, angle=volc.axes.angle))
           return(
             list(
               v.norm = v.norm,
@@ -470,7 +483,11 @@ DJEanalize <-
                 box.padding = 0.4,
                 size = 5
               ) +
-              ggplot2::theme_bw(base_size = 12) + ggplot2::theme(legend.position = "right")
+              ggplot2::theme_bw(base_size = 12) + ggplot2::theme(legend.position = legend.position,
+                                                                 axis.text.x = element_text(face=volc.axes.face, color=volc.axes.col,
+                                                                                                                     size=volc.axes.size, angle=volc.axes.angle),
+                                                                 axis.text.y = element_text(face=volc.axes.face, color=volc.axes.col,
+                                                                                            size=volc.axes.size, angle=volc.axes.angle))
             return(
               list(
                 v.norm = v.norm,
@@ -491,7 +508,11 @@ DJEanalize <-
           ggplot2::ylim(0, max(-log10(topSplice.out$FDR), na.rm = T) + max(-log10(topSplice.out$FDR), na.rm = T) *
                           30 / 100) +
           ggplot2::scale_color_manual(values = scale_color_manual) +
-          ggplot2::theme_bw(base_size = 12) + ggplot2::theme(legend.position = "right")
+          ggplot2::theme_bw(base_size = 12) + ggplot2::theme(legend.position = legend.position,
+                                                             axis.text.x = element_text(face=volc.axes.face, color=volc.axes.col,
+                                                                                        size=volc.axes.size, angle=volc.axes.angle),
+                                                             axis.text.y = element_text(face=volc.axes.face, color=volc.axes.col,
+                                                                                        size=volc.axes.size, angle=volc.axes.angle))
         return(
           list(
             v.norm = v.norm,
