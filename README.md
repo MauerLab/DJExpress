@@ -85,7 +85,7 @@ DJExpress uses two types of files as the primary input for DJE analysis:
     counts per sample (generated from FASTQ or BAM files) in
     tab-delimited format, or outputs from any other junction
     quantification tool as long as they contain junction IDs as first
-    columns, following the format chr:start:end:strand
+    columns, following the format chr: start: end: strand
     (e.g. chr1:123:456:1, where positive or negative strand are coded as
     1 and 2, respectively)
 
