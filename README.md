@@ -391,15 +391,16 @@ Let’s check the summary of **anlz.out** object:
 summary(anlz.out)
 ```
 
-    ##              Length Class      Mode
-    ## v.norm        4     EList      list
-    ## ex.norm      17     MArrayLM   list
-    ## dje.out      25     data.frame list
-    ## dje.sig       0     -none-     NULL
-    ## logFC.plot    0     -none-     NULL
-    ## volcano.plot  0     -none-     NULL
-    ## model.fit     0     -none-     NULL
-    ## group.par     0     -none-     NULL
+    ##                       Length Class      Mode
+    ## v.norm                 4     EList      list
+    ## ex.norm               17     MArrayLM   list
+    ## dje.out               25     data.frame list
+    ## dje.sig                0     -none-     NULL
+    ## logFC.plot             0     -none-     NULL
+    ## logFC.plot.junctions   0     -none-     NULL
+    ## volcano.plot           0     -none-     NULL
+    ## model.fit              0     -none-     NULL
+    ## group.par              0     -none-     NULL
 
 -   **v.norm** correspond to the log-cpm values outputed by limma:voom
 -   **ex.norm** contains the differential junction expression analysis

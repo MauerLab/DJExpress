@@ -69,7 +69,7 @@ ex.norm: Differential Junction Expression analysis output
 dje.out: Annotated ex.norm data set with additional information, including basic statistics (e.g. median, zero counts, etc) and DJE group for each junction.
 dje.sig: Significant hits in dje.out based on FDR and logFC cutoffs.
 volcano.plot: Volcano plot of differential junction expression
-logFC.plot.junctions": Table with junctions shown in logFC.plot. They are defined as junctions passing FDR cutoff for differential usage as well as differential expression.
+logFC.plot.junctions: Table with junctions shown in logFC.plot. They are defined as junctions passing FDR cutoff for differential usage as well as differential expression.
 logFC.plot: Regression plot of Absolute logFC ~ Relative logFC for differentially used (compared to average junction expression in the gene) and differentially expressed junctions (basal vs tested sample group)
 }
 \description{
