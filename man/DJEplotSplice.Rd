@@ -17,7 +17,7 @@ DJEplotSplice(
 )
 }
 \arguments{
-\item{analize.out}{output object from DJEanalize()}
+\item{analize.out}{output object from DJEanalyze()}
 
 \item{geneID}{gene name for which plot is generated}
 
