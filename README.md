@@ -410,9 +410,8 @@ summary(anlz.out)
 -   **dje.sig** a subset of **dje.out** containing significant hits
     based on FDR and logFC cutoffs and the expression group of each
     junction.
--   **logFC.plot** Shows the regression plot of Absolute logFC \~
-    Relative logFC for differentially expressed junctions (basal vs
-    tested sample group)
+-   **logFC.plot.junctions** Table with junctions shown in logFC.plot. They are defined as     junctions passing FDR cutoff for differential usage as well as differential               expression.
+-   **logFC.plot** Shows the regression plot of Absolute logFC ~ Relative logFC for           differentially used (compared to average junction expression in the gene) and             differentially expressed junctions (basal vs tested sample group)
 -   **volcano.plot** Volcano plot of differential junction expression
 -   **model.fit** Correspond to the confidence and prediction intervals
     for the linear regression (Absolute logFC \~ Relative logFC)
