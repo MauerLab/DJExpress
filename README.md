@@ -15,7 +15,7 @@ Lina Marcela Gallego-Paez
         using
         DJEprepare()](#filtering-junctions-for-differential-expression-analysis-using-djeprepare)
     -   [3.4 Test for Differential Junction Expression using
-        DJEanalize()](#test-for-differential-junction-expression-using-djeanalize)
+        DJEanalyze()](#test-for-differential-junction-expression-using-DJEanalyze)
     -   [3.5 Gene-wise Splice plots](#gene-wise-splice-plots)
     -   [3.6 Association between junction expression and external traits
         with
@@ -59,7 +59,7 @@ Co-expression Network Analysis (JCNA):
 
 -   DJEprepare()
 
--   DJEanalize()
+-   DJEanalyze()
 
 -   DJEvsTrait()
 
@@ -320,19 +320,19 @@ summary(prep.out)
 DJEprepare() contains expression-based filtered junction counts, gene
 annotation and design matrix for differential expression analysis
 
-## 3.4 Test for Differential Junction Expression using DJEanalize()
+## 3.4 Test for Differential Junction Expression using DJEanalyze()
 
 At this point we have all the data we need for the differential junction
 expression analysis.
 
 An FDR cutoff of 0.05 and a minimal absolute log-fold change (logFC) of
-2 are default paramenters for DJEanalize(). Users are free to explore
-and modify the multiple options for the function (type ?DJEanalize for
+2 are default paramenters for DJEanalyze(). Users are free to explore
+and modify the multiple options for the function (type ?DJEanalyze for
 more details):
 
 ``` r
-# Run DJEanalize
-anlz.out <- DJEanalize(prepare.out = prep.out, Group1 = Group1,
+# Run DJEanalyze
+anlz.out <- DJEanalyze(prepare.out = prep.out, Group1 = Group1,
                        FDR = 0.05, logFC = 2)
 ```
 
@@ -342,7 +342,7 @@ anlz.out <- DJEanalize(prepare.out = prep.out, Group1 = Group1,
     ## Mean number of junctions in a gene:  10 
     ## Max number of junctions in a gene:  19
 
-With DJEanalize, a tests for differential junction expression is
+With DJEanalyze, a tests for differential junction expression is
 implemented using voom’s log2-counts per million (logCPM) and
 observation-level weights based on mean-variance relationship (stored at
 **anlz.out$v.norm**).
@@ -423,7 +423,7 @@ summary(anlz.out)
     by the fit model (**model.fit**), and user-defined FDR and logFC
     cutoffs.
 
-For most users, the top relevant element in DJEanalize() output object
+For most users, the top relevant element in DJEanalyze() output object
 is **dje.sig** , a data frame with the differentially expressed
 junctions considered significant based on the FDR and logFC cutoffs
 *(for this particular example, since the gtf used only contained chr1
@@ -433,7 +433,7 @@ differentially expressed junctions detected and thus **dje.sig**,
 not produced).*
 
 The summary statistics and additional information about all junctions
-analized by DJExpress() can be found in **dje.out**:
+analyzed by DJExpress() can be found in **dje.out**:
 
 ``` r
 head(anlz.out$dje.out)
@@ -487,7 +487,7 @@ found in the tested condition (TCGA tumor samples in this example) and
 never found in any sample from the basal condition.
 
 When a junction annotation file is provided as an additional input to
-DJEanalize() (), **dje.out** contains an additional column called
+DJEanalyze() (), **dje.out** contains an additional column called
 **annotation**, where junctions not found in the gtf transcriptome
 annotation file are indicated as ***unnanotated***.
 
@@ -528,7 +528,7 @@ As example, we show here the gene-wise splice plot for the ENAH gene
 indicating the presence of an exon inclusion event in tumor samples:
 
 ``` r
-# load DJEanalize ouptut object (30 TCGA COADREAD tumor vs 30 GTEx colon tissue samples):
+# load DJEanalyze ouptut object (30 TCGA COADREAD tumor vs 30 GTEx colon tissue samples):
 data(DJEanlz)
 
 # generate gene-wise splice plot:
@@ -591,7 +591,7 @@ data, gene expression, etc) when available.
 
 **DJEvsTrait()** function recieves as input:
 
-1.  a **DJEanalize** output object (analize.out), and
+1.  a **DJEanalyze** output object (analyze.out), and
 2.  a numeric vector or a matrix of external sample traits (traitData).
 
 User should also indicate the experimental condition that should be
@@ -604,7 +604,7 @@ on correlation, or association based on regression (test.type).
 In the case of correlation analysis, **DJEvsTrait()** executes a big
 matrix correlation test (“bicor”, “pearson”, “kendall” or “spearman”)
 between the normalized junction expression contained within the
-**DJEanalize** output object and values in the trait data, for the
+**DJEanalyze** output object and values in the trait data, for the
 selected samples in **Group1**. The return object contains the matrices
 with correlation coefficients and associated P-values for each
 junction-trait pair.
@@ -675,7 +675,7 @@ Junction-trait association analysis based on biweight mid-correlation
 Group1 <- colnames(DJEanlz$v.norm$E)[grep("SRR", colnames(DJEanlz$v.norm$E))]
 
 # Run DJEvsTrait:
-DT.out <- DJEvsTrait(analize.out = DJEanlz, Group1 = Group1,traitData = SF.exp,
+DT.out <- DJEvsTrait(analyze.out = DJEanlz, Group1 = Group1,traitData = SF.exp,
                      coeff = 0.2,select.junctions = c("chr1:225692756:225695652:2",
                                                       "chr1:225688773:225692692:2",
                                                       "chr1:225688773:225695652:2"),
@@ -803,12 +803,12 @@ pipelines by following WGCNA tutorials
 
 The initial inputs for JCNA module are:
 
-1.  A **DJEanalize** output object from where junction quantification
+1.  A **DJEanalyze** output object from where junction quantification
     and additional sample information is retrieved.
 
 -   Alternatively, users can directly provide junction read counts
     table, such as the one produced by STAR alignment (the choice should
-    be indicated in *input.type = c(“DJEanalize.out”,
+    be indicated in *input.type = c(“DJEanalyze.out”,
     “junction.counts”)* and the path to folder where individual junction
     quantification files are located should be indicated in the
     *workDir* argument. This folder should only contain junction
@@ -824,7 +824,7 @@ The initial inputs for JCNA module are:
 2.  A vector or factor specifying sample names corresponding to the
     experimental condition that should be excluded from the JCNA
     analysis (Group1, we want to keep only tumor sample data). This
-    should be indicated only when *input.type = “DJEanalize.out”*.
+    should be indicated only when *input.type = “DJEanalyze.out”*.
 
 3.  A numeric vector or a matrix of external sample traits. Samples
     should be as rows and traits as columns.
@@ -849,14 +849,14 @@ selection of a proper soft-thresholding power that will be used later
 during JCNA 1-pass step.
 
 For this example, we are going to use a full version of the
-**DJEanalize()** output we used before. This object has to be loaded
+**DJEanalyze()** output we used before. This object has to be loaded
 from GitLab:
 
 ``` r
-# Load DJEanalize output for JCNA:
-githubURL <- "https://gitlab.com/MauerLab/djexpress-djeanalize-output-file/raw/main/DJEanlz.total.RData"
+# Load DJEanalyze output for JCNA:
+githubURL <- "https://gitlab.com/MauerLab/djexpress-DJEanalyze-output-file/raw/main/DJEanlz.total.RData"
 load(url(githubURL))
-DJEanlz <- analize.coadread
+DJEanlz <- analyze.coadread
 
 # Summary of DJEanlz:
 summary(DJEanlz)
@@ -885,8 +885,8 @@ seq(1,length(colnames(DJEanlz$v.norm)[grep("TCGA", colnames(DJEanlz$v.norm))]), 
 Group1 <- colnames(DJEanlz$v.norm$E)[grep("SRR", colnames(DJEanlz$v.norm$E))]
 
 # Run JCNAprepare (it takes some minutes):
-Jprep <- JCNAprepare(analize.out=DJEanlz, Group1 = Group1,
-traitData = SF.exp, abline.threshold=600, input.type = "DJEanalize.out")
+Jprep <- JCNAprepare(analyze.out=DJEanlz, Group1 = Group1,
+traitData = SF.exp, abline.threshold=600, input.type = "DJEanalyze.out")
 ```
 
     ## Allowing parallel execution with up to 2 working processes.

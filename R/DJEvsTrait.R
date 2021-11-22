@@ -1,7 +1,7 @@
 #' DJEvsTrait: Junction relationship to external trait
 #'
 #' Correlation between junction expression and sample traits
-#' @param analize.out output object from DJEanalize()
+#' @param analize.out output object from DJEanalyze()
 #' @param Group1 vector or factor specifying basic control sample names
 #' @param traitData a numeric vector or a matrix of external sample traits
 #' @param nThreads numeric: number of threads to allow.

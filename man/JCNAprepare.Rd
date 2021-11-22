@@ -5,7 +5,7 @@
 \title{JCNAprepare: WGCNA annotation for junction expression-based network construction}
 \usage{
 JCNAprepare(
-  input.type = c("DJEanalize.out", "junction.counts"),
+  input.type = c("DJEanalyze.out", "junction.counts"),
   workDir = NULL,
   data.type = c("sample", "matrix"),
   aligner = c("STAR", "other"),
@@ -26,7 +26,7 @@ JCNAprepare(
 )
 }
 \arguments{
-\item{input.type}{input object type. Options are DJEanalize() output object or junction read counts table.}
+\item{input.type}{input object type. Options are DJEanalyze() output object or junction read counts table.}
 
 \item{workDir}{path to folder where individual junction quantification files (e.g. from STAR alignment) are located. This folder should only contain junction quantification files.}
 
@@ -35,9 +35,9 @@ JCNAprepare(
 \item{aligner}{One of c("STAR", "other"), indicating the alignment tool used to produce junction quantification. Only used if data.type = "matrix".
 #' If "other" is indicated, files in workDir path should contain junction IDs (with the format chr:start:end:strand) in the first column read counts in the second column.}
 
-\item{analize.out}{output object from DJEanalize(). Only used if input.type = "DJEanalize.out".}
+\item{analize.out}{output object from DJEanalyze(). Only used if input.type = "DJEanalyze.out".}
 
-\item{Group1}{vector or factor specifying basic control sample names. Only used if input.type = "DJEanalize.out".}
+\item{Group1}{vector or factor specifying basic control sample names. Only used if input.type = "DJEanalyze.out".}
 
 \item{gtf}{Reference transcriptome in genecode gtf file format. Used to define gene ID for junctions if input.type = "junction.counts".}
 
@@ -67,7 +67,7 @@ JCNAprepare(
 List object containing sample dendrogram, expression data matrix, trait data matrix and topology network plots
 }
 \description{
-Filters samples and junctions in DJEanalize expression data object for junction co-expression network analysis.
+Filters samples and junctions in DJEanalyze expression data object for junction co-expression network analysis.
 }
 \examples{
 \dontrun{
@@ -78,6 +78,6 @@ colnames(DJEanlz$v.norm)[grep("TCGA", colnames(DJEanlz$v.norm))] <- paste0("TCGA
 seq(1,length(colnames(DJEanlz$v.norm)[grep("TCGA", colnames(DJEanlz$v.norm))]), 1))
 Group1 <- colnames(DJEanlz$v.norm$E)[grep("SRR", colnames(DJEanlz$v.norm$E))]
 Jprep <- JCNAprepare(analize.out=DJEanlz, Group1 = Group1,
-traitData = SF.exp, abline.threshold=60, input.type = "DJEanalize.out")
+traitData = SF.exp, abline.threshold=60, input.type = "DJEanalyze.out")
 }
 }

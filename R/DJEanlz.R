@@ -1,4 +1,4 @@
-#' output object of DJEanalize function
+#' output object of DJEanalyze function
 #'
 #' A list of objects containing the results of differential junction expression analysis. TCGA and GTEx example junction expression is used.
 #'

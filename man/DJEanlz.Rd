@@ -3,7 +3,7 @@
 \docType{data}
 \name{DJEanlz}
 \alias{DJEanlz}
-\title{output object of DJEanalize function}
+\title{output object of DJEanalyze function}
 \format{
 An object of class \code{"list"}.
 }

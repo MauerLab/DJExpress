@@ -1,7 +1,7 @@
 #' DJEplotSplice: Differential junction usage plot
 #'
 #' Plots relative log-fold changes by junctions for the specified gene and highlights the significantly spliced junctions. This is a wrapper function of limma plotSplice.
-#' @param analize.out output object from DJEanalize()
+#' @param analize.out output object from DJEanalyze()
 #' @param geneID gene name for which plot is generated
 #' @param gtf Reference transcriptome in genecode gtf file format. Used to define gene coordinates
 #' @param target.junction Junction IDs to highlight within gene model plot. Maximum 5 junctions.

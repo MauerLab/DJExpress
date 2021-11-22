@@ -20,7 +20,7 @@ DJEvsTrait(
 )
 }
 \arguments{
-\item{analize.out}{output object from DJEanalize()}
+\item{analize.out}{output object from DJEanalyze()}
 
 \item{Group1}{vector or factor specifying basic control sample names}
 

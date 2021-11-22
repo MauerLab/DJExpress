@@ -33,7 +33,7 @@ Imports:
     RColorBrewer,
     methods
 Collate: 
-    'DJEanalize.R'
+    'DJEanalyze.R'
     'DJEanlz.R'
     'DJEannotate.R'
     'zzz.R'
